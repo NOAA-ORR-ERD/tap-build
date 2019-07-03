@@ -42,7 +42,9 @@ StartSites = ['-125.74,48.04', '-126.19,47.83', '-126.64,47.62', '-127.09,47.41'
               '-127.38,46.02', '-127.83,45.81', '-128.28,45.60', '-124.45,46.85',
               '-124.90,46.64', '-125.35,46.43', '-125.80,46.22', '-126.25,46.01',
               '-125.70,43.70', '-127.00,43.70'] #30 start locations
-NumLEs = 7*24 # number of Lagrangian elements you want in the GNOME run
+OilType = None
+
+NumLEs = 10000 # number of Lagrangian elements you want in the GNOME run
 ReleaseLength = 7*24 # Length of release in hours (0 for instantaneous)
 
 # time span of your data set
@@ -53,22 +55,24 @@ DataGaps = ( )
 #  [name, (months) ]
 #    name is a string for the season name  
 #    months is a tuple of integers indicating which months are in that season
+Seasons = ['AllYear', [1,2,3,4,5,6,7,8,9,10,11,12]]
 #Seasons = [
 #            ['Spring',  [3, 4, 5 ]],
 #            ['Summer',  [6, 7, 8 ]],
 #            ['Fall',  [9, 10, 11]],
 #          ]
-Seasons = [
-            ['Dec', [12]],
-            ['Jan', [1]],
-            ['Feb', [2]],
-            ['Mar', [3]],
-            ['Apr', [4]],
-            ['May', [5]],
-          ]
+# Seasons = [
+#             ['Dec', [12]],
+#             ['Jan', [1]],
+#             ['Feb', [2]],
+#             ['Mar', [3]],
+#             ['Apr', [4]],
+#             ['May', [5]],
+#           ]
 NumStarts = 200 # number of start times you want in each season:
 
-days = [1, 3, 5, 7, 10, 15, 20, 30, 50, 70, 90, 120, 135, 150]
+days = [1, 2, 3, 4, 5, 7, 10, 14, 21]
+# days = [1, 3, 5, 7, 10, 15, 20, 30, 50, 70, 90, 120, 135, 150]
 
 # Inputs needed for PyGnome
 MapFileName, MapFileType = ('coast_Pacific.bna', 'BNA')
@@ -198,7 +202,7 @@ if BuildCubes and __name__ == '__main__':
     print "\n---Building Cubes---"
     import BuildCubes
     BuildCubes.main(RootDir, CubesPath, CubesRootNames, CubeType, CubeDataType, Seasons,
-                    TrajectoriesPath, ReceptorType, Grid, OilWeatheringType, OutputTimes, NumLEs)
+                    TrajectoriesPath, ReceptorType, Grid, OilWeatheringType, OutputTimes, NumLEs, VariableMass)
 
 if BuildSite and __name__ == '__main__':
     print "\n---Building Sites---"

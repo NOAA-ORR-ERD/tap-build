@@ -24,11 +24,11 @@ import os
 import numpy as np
 from time import time
 
-from batch_gnome import tap_mod, oil_weathering
+import tap_mod   #, oil_weathering
 
 
 def main(RootDir, CubesPath, CubesRootNames, CubeType, CubeDataType, Seasons, TrajectoriesPath,
-         ReceptorType, Grid, OilWeatheringType, OutputTimes, NumLEs):
+         ReceptorType, Grid, OilWeatheringType, OutputTimes, NumLEs, VariableMass):
     # create the dir for all the cubes:
     FullCubesPath = os.path.join(RootDir,CubesPath) 
     if not os.path.isdir(FullCubesPath):
