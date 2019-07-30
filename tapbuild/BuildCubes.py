@@ -29,6 +29,7 @@ import tap_mod   #, oil_weathering
 
 def main(RootDir, CubesPath, CubesRootNames, CubeType, CubeDataType, Seasons, TrajectoriesPath,
          ReceptorType, Grid, OilWeatheringType, OutputTimes, NumLEs, VariableMass):
+
     # create the dir for all the cubes:
     FullCubesPath = os.path.join(RootDir,CubesPath) 
     if not os.path.isdir(FullCubesPath):
@@ -125,12 +126,14 @@ def main(RootDir, CubesPath, CubesRootNames, CubeType, CubeDataType, Seasons, Tr
                                                  OutputTimes,
                                                  Receptors,
                                                  oil_weathering.OilTypes[OilWeatheringType])
+         
                 elif CubeType == "Volume":
                     print "computing volume cubes"
                     Cube = tap_mod.CompThicknessCube(TrajFiles,
                                                      OutputTimes,
                                                      Receptors,
-                                                     oil_weathering.OilTypes[OilWeatheringType])
+                                                     oil_weathering.OilTypes[OilWeatheringType],
+                                                     VariableMass)
                     types = {'float32': np.float32,
                              'uint8'  : np.uint8,
                              'uint16' : np.uint16,

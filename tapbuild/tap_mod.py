@@ -738,10 +738,10 @@ def CompThicknessCube(FileList, OutputTimes, Grid, Weather=None, VariableMass=No
                 #NOTE: for TAP -- we assume that are the particles have unit mass at the start
                 #      so we don't read it from the file
                 LE_mass = np.ones((NumLEs,), dtype = np.float32)
-                if Weather:
+                if Weather:     # weathering by the post-calculation epproximation
                     #print "weathering the LEs"
                     LE_mass = Weather.weather(LE_mass, LE_age)
-                elif VariableMass:
+                elif VariableMass:   
                     print "using variable mass from trajectory file"
                     LE_mass = LE_vars['mass']
                     
