@@ -13,7 +13,7 @@ import numpy as np
 
 # Location to read and write files for this TAP application
 RootDir = "C:/Users/dylan.righi/Science/TapSites/Socal/"
-# RootDir = "C:/Users/whit162/Documents/Projects/ARPA-E/GNOMEFiles/TAPbuild-master/tapbuild/Pacific_PrimarySimulation_Oct2018"
+
 if not os.path.exists(RootDir):
     os.makedirs(RootDir)
     
@@ -23,9 +23,9 @@ Data_DirW = "C:/Users/dylan.righi/Science/SoCalTAP/Data/gnome_ucla/wind/"
 if not os.path.exists(Data_DirC):
     raise Exception("RootDir: %s Doesn't exist"%Data_DirC)
 
-BuildStartTimes = True
-RunPyGnome = True
-BuildCubes = False
+BuildStartTimes = False
+RunPyGnome = False
+BuildCubes = True
 BuildSite = False
 BuildViewer = False
 
@@ -74,8 +74,7 @@ StartSites = [
 VariableMass = True  # True if you want GNOME runs with weathering (must have oil-type defined in StartSite)
 waterTemp = 290
 waterSal = 33
-SpillAmount = [10000, 'bbl']
-# SpillUnits = 'bbl'
+SpillAmount = [1, 'kg']
 
 NumLEs = 10000 # number of Lagrangian elements you want in the GNOME run
 ReleaseLength = 7*24 # Length of release in hours (0 for instantaneous)
@@ -153,8 +152,8 @@ for ftmp in  os.listdir(Data_DirW):
 
 refloat = -1
 windage_range = (0.02,0.04)
-windage_persist = 12
-diffusion_coef = 5000
+windage_persist = 900
+diffusion_coef = 10000  # 1.e4
 model_timestep = 30*60 # timestep in seconds
 
 ##############################################################
@@ -169,7 +168,7 @@ TrajectoryRunLength = 24 * max(days)
 TrajectoriesPath = 'Trajectories_n' + str(NumLEs) # relative to RootDir
 MapName = Project + ' TAP'
 CubesPath = 'Cubes_n' + str(NumLEs)
-CubesRootNames = ['Arc_' for i in StartTimeFiles] # built to match the start time files
+CubesRootNames = ['SoCa' for i in StartTimeFiles] # built to match the start time files
 
 # Can be used to filter out some start sites and start times
 # These variables function as an index map
@@ -223,7 +222,8 @@ PresetSpillAmounts = ['1000 barrels', '100 barrels']
 ## TAP Viewer Data (for SITE.TXT file)
 TAPViewerSource = os.path.join(os.path.dirname(RootDir),'TapFiles') # where the TAP view, etc lives.
 ## setup for the Viewer"
-TAPViewerPath = Project + "_TapView_" + str(NumLEs)
+TAPViewerPath = Project + "_TapView_" 
+# TAPViewerPath = Project + "_TapView_" + str(NumLEs)
 
 #############################
 ###### Running Scripts ######
@@ -254,7 +254,7 @@ if BuildSite and __name__ == '__main__':
     from tapbuild import BuildSite
     BuildSite.main(RootDir, MapName, MapFileName, MapFileType, NumStarts, Seasons,
                    StartSites, OutputTimes, OutputUserStrings, PresetLOCS,
-                   PresetSpillAmounts, ReceptorType, Grid)
+                   PresetSpillAmounts, ReceptorType, Grid,CubesRootNames)
 
 if BuildViewer and __name__ == '__main__':
     print "\n---Building Viewer---"

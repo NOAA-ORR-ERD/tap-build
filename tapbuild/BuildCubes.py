@@ -24,7 +24,7 @@ import os
 import numpy as np
 from time import time
 
-import tap_mod   #, oil_weathering
+import tap_mod,   oil_weathering
 
 
 def main(RootDir, CubesPath, CubesRootNames, CubeType, CubeDataType, Seasons, TrajectoriesPath,
@@ -128,6 +128,7 @@ def main(RootDir, CubesPath, CubesRootNames, CubeType, CubeDataType, Seasons, Tr
                                                  oil_weathering.OilTypes[OilWeatheringType])
          
                 elif CubeType == "Volume":
+                    # ***** #
                     print "computing volume cubes"
                     Cube = tap_mod.CompThicknessCube(TrajFiles,
                                                      OutputTimes,
@@ -161,4 +162,4 @@ if __name__ == '__main__':
     import Setup_TAP as tap
     main(tap.RootDir, tap.CubesPath, tap.CubesRootNames, tap.CubeType, tap.CubeDataType,
          tap.Seasons, tap.TrajectoriesPath, tap.ReceptorType, tap.Grid, tap.OilWeatheringType,
-         tap.OutputTimes, tap.NumLEs)
+         tap.OutputTimes, tap.NumLEs,VariableMass)

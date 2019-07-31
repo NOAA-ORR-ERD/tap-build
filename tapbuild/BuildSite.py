@@ -4,13 +4,15 @@ import os
 
 def main(RootDir, MapName, MapFileName, MapFileType, NumStarts, Seasons, StartSites,
          OutputTimes, OutputUserStrings, PresetLOCS, PresetSpillAmounts, ReceptorType,
-         Grid):
+         Grid,CubesRootNames):
 
     print "starting"
     
     StartTimeFiles = [(os.path.join(RootDir, s[0]+'Starts.txt'), s[0]) for s in Seasons]
-    CubesRootNames = ["Arc_" for i in StartTimeFiles] # built to match the start time files
+    # CubesRootNames = ["Arc_" for i in StartTimeFiles] # built to match the start time files
     
+
+
     file = open(os.path.join(RootDir,"site.txt"),'w')
     
     file.write('"%s"  //Map Name for User\n'%MapName)
@@ -49,11 +51,11 @@ def main(RootDir, MapName, MapFileName, MapFileType, NumStarts, Seasons, StartSi
     
     print "Writing the start sites"
     for site in StartSites:
-        file.write(site + "\n")
+        file.write(site[0] + "\n")
     file.close()
 
 if __name__ == '__main__':
     import Setup_TAP as tap
     main(tap.RootDir, tap.MapName, tap.MapFileName, tap.MapFileType, tap.NumStarts,
          tap.Seasons, tap.StartSites, tap.OutputTimes, tap.OutputUserStrings,
-         tap.PresetLOCS, tap.PresetSpillAmounts, tap.ReceptorType, tap.Grid)
+         tap.PresetLOCS, tap.PresetSpillAmounts, tap.ReceptorType, tap.Grid,tap.CubesRootNames)

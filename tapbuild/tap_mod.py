@@ -729,7 +729,7 @@ def CompThicknessCube(FileList, OutputTimes, Grid, Weather=None, VariableMass=No
         for step in xrange( len(OutputSteps) - 1 ):
             ## step through the Trajectory time steps between each Cube Timestep
             for t in xrange(OutputSteps[step], OutputSteps[step+1]):
-                LE_vars = traj_file.get_timestep(t,variables=['longitude','latitude','age','status_codes'])
+                LE_vars = traj_file.get_timestep(t,variables=['longitude','latitude','age','status_codes','mass'])
                 LE_lat = LE_vars['latitude']
                 LE_long = LE_vars['longitude']
                 LE_positions = np.column_stack((LE_long, LE_lat))
@@ -742,7 +742,7 @@ def CompThicknessCube(FileList, OutputTimes, Grid, Weather=None, VariableMass=No
                     #print "weathering the LEs"
                     LE_mass = Weather.weather(LE_mass, LE_age)
                 elif VariableMass:   
-                    print "using variable mass from trajectory file"
+                    # print "using variable mass from trajectory file"
                     LE_mass = LE_vars['mass']
                     
                 flags = LE_vars['status_codes'].astype(np.uint8)
