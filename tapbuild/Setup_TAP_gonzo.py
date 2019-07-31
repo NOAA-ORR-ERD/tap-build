@@ -12,22 +12,26 @@ from datetime import datetime
 import numpy as np
 
 # Location to read and write files for this TAP application
-RootDir = "C:/Users/dylan.righi/Science/TapSites/Socal"
+# RootDir = "C:/Users/dylan.righi/Science/TapSites/Socal"
+RootDir = "/data/dylan/TapSites/SoCal"   # Gonzo 
 
 if not os.path.exists(RootDir):
     os.makedirs(RootDir)
     
 # Location of Gnome data forcing
-Data_DirC = "C:/Users/dylan.righi/Science/SoCalTAP/Data/gnome_ucla/surface/"
-Data_DirW = "C:/Users/dylan.righi/Science/SoCalTAP/Data/gnome_ucla/wind/"
+# Data_DirC = "C:/Users/dylan.righi/Science/SoCalTAP/Data/gnome_ucla/surface/"
+# Data_DirW = "C:/Users/dylan.righi/Science/SoCalTAP/Data/gnome_ucla/wind/"
+Data_DirC = "/data/dylan/SoCalTAP/Data/gnome_ucla/surface/"     # Gonzo
+Data_DirW = "/data/dylan/SoCalTAP/Data/gnome_ucla/wind/"
+
 if not os.path.exists(Data_DirC):
     raise Exception("RootDir: %s Doesn't exist"%Data_DirC)
 
-BuildStartTimes = False
-RunPyGnome = False
+BuildStartTimes = True
+RunPyGnome = True
 BuildCubes = True
-BuildSite = True
-BuildViewer = True
+BuildSite = False
+BuildViewer = False
 
 ###################################
 ###### **** User Inputs **** ######
@@ -80,7 +84,8 @@ NumLEs = 10000 # number of Lagrangian elements you want in the GNOME run
 ReleaseLength = 7*24 # Length of release in hours (0 for instantaneous)
 
 # time span of your data set
-DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2004, 2, 26, 23))
+# DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2004, 2, 26, 23))
+DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2013, 12, 31, 23))
 DataGaps = ( )
 
 # specification for how you want seasons to be defined, as a list of lists:
@@ -103,7 +108,7 @@ Seasons = [
 #             ['Apr', [4]],
 #             ['May', [5]],
 #           ]
-NumStarts = 20 # number of start times you want in each season:
+NumStarts = 200 # number of start times you want in each season:
 
 days = [1, 2, 3, 4, 5, 7, 10, 14, 21]
 # days = [1, 3, 5, 7, 10, 15, 20, 30, 50, 70, 90, 120, 135, 150]
@@ -125,29 +130,11 @@ for ftmp in  os.listdir(Data_DirW):
 # current_files = [
 #                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2000_Pacific.nc"),
 #                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2001_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2002_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2003_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2004_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2005_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2006_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2007_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2008_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2009_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2010_Pacific.nc")
 #                 ]
 
 # wind_files = [
 #               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2000_Pacific.nc"),
 #               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2001_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2002_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2003_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2004_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2005_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2006_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2007_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2008_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2009_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2010_Pacific.nc")
 #              ]
 
 refloat = -1

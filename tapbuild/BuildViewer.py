@@ -33,7 +33,7 @@ def main(RootDir, TAPViewerPath, TAPViewerSource, MapFileName, CubesPath, Season
         os.mkdir(TAPDATADir)
 
     # copy the TAPCONFIG file
-    shutil.copy(os.path.join(TAPViewerSource, "TAPCONFIG.txt"), TAPDATADir)
+    shutil.copy(os.path.join(TAPViewerSource, "TAPDATA", "TAPCONFIG.txt"), TAPDATADir)
 
     # copy the site.txt file
     shutil.copy(os.path.join(RootDir,"site.txt"), TAPDATADir)
