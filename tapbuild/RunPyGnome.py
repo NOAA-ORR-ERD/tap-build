@@ -180,7 +180,7 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
     #     diff = round((timer4-timer1).total_seconds() / 3600, 2)
     #     count = len(RunStarts) * len(RunSites)
     #     timingRecord.write(Season+" took "+str(diff)+" hours to finish "+str(count)+" Gnome runs")
-    OutDir.close
+    # OutDir.close
     # timingRecord.close
 
 def make_dir(path):

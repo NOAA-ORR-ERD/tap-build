@@ -125,29 +125,11 @@ for ftmp in  os.listdir(Data_DirW):
 # current_files = [
 #                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2000_Pacific.nc"),
 #                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2001_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2002_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2003_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2004_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2005_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2006_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2007_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2008_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2009_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2010_Pacific.nc")
 #                 ]
 
 # wind_files = [
 #               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2000_Pacific.nc"),
 #               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2001_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2002_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2003_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2004_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2005_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2006_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2007_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2008_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2009_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2010_Pacific.nc")
 #              ]
 
 refloat = -1

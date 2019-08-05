@@ -171,7 +171,7 @@ CubeType = 'Volume' # should be either "Volume" or "Cumulative"
 ##   float32 gives better precision for lots of LEs
 ##   uint8 saves disk space -- and is OK for about 1000 LEs
 ##   uint16 is a mid-point -- probably good to 10,000 LEs or so
-CubeDataType = 'uint8'
+CubeDataType = 'float32'
 
 # Files with time series records in them used by GNOME
 # These are used to compute the possible time files. The format is:
