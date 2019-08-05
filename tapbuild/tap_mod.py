@@ -429,7 +429,8 @@ def transform(data, num_LE, n = 1.5, dtype=np.uint8):
     data = np.asarray(data, dtype=np.float32)
 
     if dtype is np.float32:
-        data = data / num_LE 
+        # data = data / num_LE 
+        data = data 
     elif dtype is np.uint8:
         data = np.ceil((data / num_LE)**(1.0/n)*255)  
     elif dtype is np.uint16:
