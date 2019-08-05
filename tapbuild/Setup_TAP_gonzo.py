@@ -110,7 +110,9 @@ Seasons = [
 #           ]
 NumStarts = 200 # number of start times you want in each season:
 
-days = [1, 2, 3, 4, 5, 7, 10, 14, 21]
+# days = [1, 2, 3, 4, 5, 7, 10, 14, 21]
+days = [1, 2, 3, 5, 7, 14, 21]
+
 # days = [1, 3, 5, 7, 10, 15, 20, 30, 50, 70, 90, 120, 135, 150]
 
 # Inputs needed for PyGnome
@@ -190,9 +192,9 @@ TimeSeries = None
 class Grid:
 	pass
 Grid.min_lat = 32.0 # decimal degrees
-Grid.max_lat = 36.0
+Grid.max_lat = 35.5
 Grid.dlat = 0.02       #  makes 2.23km tall receptor cells at 33N
-Grid.min_long = 238.0
+Grid.min_long = 238.5
 Grid.max_long = 243.74
 Grid.dlong = 0.025       # 2.33km at 30N, 2.25km at 36N
 
