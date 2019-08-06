@@ -63,7 +63,8 @@ StartSites = [
 ['240.4585139, 34.337675  ', 'AD02061', 'Hogan'],
 ['240.4478833, 34.33499167', 'AD02061', 'Houchin'],
 ['240.5997833, 34.12510833', 'AD02298', 'Gail'],
-['237.4821722, 34.17957222', 'AD02323', 'Grace'], 
+# ['237.4821722, 34.17957222', 'AD02323', 'Grace'], # initially wrong long
+['240.0935417, 34.17957222', 'AD02323', 'Grace'], 
 ]
 
 # StartSites = ['-125.74,48.04', '-126.19,47.83', '-126.64,47.62', '-127.09,47.41',
@@ -162,7 +163,9 @@ CubesRootNames = ['SoCa' for i in StartTimeFiles] # built to match the start tim
 # Can be used to filter out some start sites and start times
 # These variables function as an index map
 s0,s1 = [0,len(StartSites)]
-RunSites = range(s0,s1)
+# RunSites = range(s0,s1)
+RunSites = [22 23]
+
 r0,r1 = [0,NumStarts]
 RunStarts = range(r0,r1)
 
