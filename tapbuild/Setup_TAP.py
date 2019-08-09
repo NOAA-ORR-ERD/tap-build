@@ -25,9 +25,9 @@ if not os.path.exists(Data_DirC):
 
 BuildStartTimes = False
 RunPyGnome = False
-BuildCubes = True
+BuildCubes = False
 BuildSite = True
-BuildViewer = True
+BuildViewer = False
 
 ###################################
 ###### **** User Inputs **** ######
@@ -89,7 +89,9 @@ DataGaps = ( )
 #    name is a string for the season name  
 #    months is a tuple of integers indicating which months are in that season
 Seasons = [
-    ['AllYear', [1,2,3,4,5,6,7,8,9,10,11,12]]
+    ['AllYear', [1,2,3,4,5,6,7,8,9,10,11,12]],
+    ['Summer', [6,7,8,9,10,11]],
+    ['Winter', [12,1,2,3,4,5]]
 ]
 # Seasons = [
 #            ['Spring',  [3, 4, 5 ]],
@@ -104,9 +106,10 @@ Seasons = [
 #             ['Apr', [4]],
 #             ['May', [5]],
 #           ]
-NumStarts = 20 # number of start times you want in each season:
+NumStarts = 200 # number of start times you want in each season:
 
-days = [1, 2, 3, 4, 5, 7, 10, 14, 21]
+# days = [1, 2, 3, 4, 5, 7, 10, 14, 21]
+days = [1, 2, 3, 5, 7, 14, 21]
 # days = [1, 3, 5, 7, 10, 15, 20, 30, 50, 70, 90, 120, 135, 150]
 
 # Inputs needed for PyGnome
@@ -186,9 +189,9 @@ TimeSeries = None
 class Grid:
 	pass
 Grid.min_lat = 32.0 # decimal degrees
-Grid.max_lat = 36.0
+Grid.max_lat = 35.5
 Grid.dlat = 0.02       #  makes 2.23km tall receptor cells at 33N
-Grid.min_long = 238.0
+Grid.min_long = 238.5
 Grid.max_long = 243.74
 Grid.dlong = 0.025       # 2.33km at 30N, 2.25km at 36N
 
@@ -205,7 +208,7 @@ PresetSpillAmounts = ['1000 barrels', '100 barrels']
 ## TAP Viewer Data (for SITE.TXT file)
 TAPViewerSource = os.path.join(os.path.dirname(RootDir),'TapFiles') # where the TAP view, etc lives.
 ## setup for the Viewer"
-TAPViewerPath = Project + "_TapView_" 
+TAPViewerPath = Project + "_TapView" 
 # TAPViewerPath = Project + "_TapView_" + str(NumLEs)
 
 #############################

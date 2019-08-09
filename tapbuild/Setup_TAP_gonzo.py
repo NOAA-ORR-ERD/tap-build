@@ -94,7 +94,9 @@ DataGaps = ( )
 #    name is a string for the season name  
 #    months is a tuple of integers indicating which months are in that season
 Seasons = [
-    ['AllYear', [1,2,3,4,5,6,7,8,9,10,11,12]]
+    # ['AllYear', [1,2,3,4,5,6,7,8,9,10,11,12]],
+    ['Summer', [6,7,8,9,10,11]],
+    ['Winter', [12,1,2,3,4,5]]
 ]
 # Seasons = [
 #            ['Spring',  [3, 4, 5 ]],
@@ -163,8 +165,7 @@ CubesRootNames = ['SoCa' for i in StartTimeFiles] # built to match the start tim
 # Can be used to filter out some start sites and start times
 # These variables function as an index map
 s0,s1 = [0,len(StartSites)]
-# RunSites = range(s0,s1)
-RunSites = range(22, 23)
+RunSites = range(s0,s1)
 
 r0,r1 = [0,NumStarts]
 RunStarts = range(r0,r1)
@@ -214,7 +215,7 @@ PresetSpillAmounts = ['1000 barrels', '100 barrels']
 ## TAP Viewer Data (for SITE.TXT file)
 TAPViewerSource = os.path.join(os.path.dirname(RootDir),'TapFiles') # where the TAP view, etc lives.
 ## setup for the Viewer"
-TAPViewerPath = Project + "_TapView_" 
+TAPViewerPath = Project + "_TapView" 
 # TAPViewerPath = Project + "_TapView_" + str(NumLEs)
 
 #############################
