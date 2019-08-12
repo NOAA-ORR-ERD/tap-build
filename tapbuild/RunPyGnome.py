@@ -164,7 +164,7 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
                                                   %(pos_idx+1, time_idx,int(start_time.strftime('%y%m%d%H'))),
                                                   )
                 model.outputters.clear()
-                model.outputters += NetCDFOutput(netcdf_output_file,output_timestep=timedelta(hours=OutputTimestep))
+                model.outputters += NetCDFOutput(netcdf_output_file,output_timestep=timedelta(hours=OutputTimestep),surface_conc=None)
                 
                 model.spills.clear()
                 model.spills += spill
