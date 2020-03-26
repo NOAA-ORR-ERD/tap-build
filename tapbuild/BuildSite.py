@@ -51,7 +51,12 @@ def main(RootDir, MapName, MapFileName, MapFileType, NumStarts, Seasons, StartSi
     
     print "Writing the start sites"
     for site in StartSites:
-        file.write(site[0] + "\n")
+        # file.write(site[0] + "\n")
+        sss = ''
+        for s in site: sss = sss + s + ', '
+        file.write(sss[:-2] + "\n")
+
+
     file.close()
 
 if __name__ == '__main__':
