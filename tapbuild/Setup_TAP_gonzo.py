@@ -27,8 +27,8 @@ Data_DirW = "/data/dylan/SoCalTAP/Data/gnome_ucla/wind/"
 if not os.path.exists(Data_DirC):
     raise Exception("RootDir: %s Doesn't exist"%Data_DirC)
 
-BuildStartTimes = True
-RunPyGnome = True
+BuildStartTimes = False
+RunPyGnome = False
 BuildCubes = True
 BuildSite = False
 BuildViewer = False
@@ -95,8 +95,11 @@ DataGaps = ( )
 #    months is a tuple of integers indicating which months are in that season
 Seasons = [
     # ['AllYear', [1,2,3,4,5,6,7,8,9,10,11,12]],
-    ['Summer', [6,7,8,9,10,11]],
-    ['Winter', [12,1,2,3,4,5]]
+    # ['Summer', [6,7,8,9,10,11]],
+    # ['Winter', [12,1,2,3,4,5]]
+    ['Summer', [5,6,7,8,9,10]],
+    ['Winter', [11,12,1,2,3,4]]
+
 ]
 # Seasons = [
 #            ['Spring',  [3, 4, 5 ]],
