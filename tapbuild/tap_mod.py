@@ -748,6 +748,7 @@ def CompThicknessCube(FileList, OutputTimes, Grid, Weather=None, VariableMass=No
                     
                 flags = LE_vars['status_codes'].astype(np.uint8)
                 Vol = comp_volume(LE_positions, LE_mass, flags, Grid)
+                print(np.maximum(Vol))
                 # keep the largest volume computed between output timesteps
                 VolTable = np.maximum(Vol.flat, VolTable)
             ## put the max volume in the Cube at this Cube time step
