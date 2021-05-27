@@ -744,8 +744,8 @@ def CompThicknessCube(FileList, OutputTimes, Grid, Weather=None, VariableMass=No
                     LE_mass = Weather.weather(LE_mass, LE_age)
                 elif VariableMass:   
                     print "using variable mass/density from trajectory file"
-                    # LE_mass = LE_vars['mass']
-                    LE_mass = LE_vars['mass']/LE_vars['density']*6.29   # from kg to bbls
+                    LE_mass = LE_vars['mass']
+                    # LE_mass = LE_vars['mass']/LE_vars['density']*6.29   # from kg to bbls
                     
                 flags = LE_vars['status_codes'].astype(np.uint8)
                 Vol = comp_volume(LE_positions, LE_mass, flags, Grid)
