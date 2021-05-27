@@ -12,14 +12,18 @@ from datetime import datetime
 import numpy as np
 
 # Location to read and write files for this TAP application
-RootDir = "C:/Users/dylan.righi/Science/TapSites/Socal"
+# RootDir = "C:/Users/dylan.righi/Science/TapSites/Socal"
+RootDir = "/data/dylan/TapSites/SoCal"   # Gonzo 
 
 if not os.path.exists(RootDir):
     os.makedirs(RootDir)
     
 # Location of Gnome data forcing
-Data_DirC = "C:/Users/dylan.righi/Science/SoCalTAP/Data/gnome_ucla/surface/"
-Data_DirW = "C:/Users/dylan.righi/Science/SoCalTAP/Data/gnome_ucla/wind/"
+# Data_DirC = "C:/Users/dylan.righi/Science/SoCalTAP/Data/gnome_ucla/surface/"
+# Data_DirW = "C:/Users/dylan.righi/Science/SoCalTAP/Data/gnome_ucla/wind/"
+Data_DirC = "/data/dylan/SoCalTAP/Data/gnome_ucla/surface/"     # Gonzo
+Data_DirW = "/data/dylan/SoCalTAP/Data/gnome_ucla/wind/"
+
 if not os.path.exists(Data_DirC):
     raise Exception("RootDir: %s Doesn't exist"%Data_DirC)
 
@@ -28,6 +32,7 @@ RunPyGnome = False
 BuildCubes = False
 BuildSite = True
 BuildViewer = False
+FilterSites = True
 
 ###################################
 ###### **** User Inputs **** ######
@@ -43,13 +48,13 @@ StartSites = [
 ['239.3191833, 34.46913611', 'AD02286', 'Harvest'],
 ['239.3536111, 34.45550833', 'AD02286', 'Hermosa'],
 ['239.2977111, 34.49501389', 'AD02286', 'Hildago'],
-['239.832475,  34.376675  ', 'AD01349', 'Hondo'],
-['239.7208167, 34.35039167', 'AD01349', 'Harmony'],
-['239.8830025, 34.39073056', 'AD01349', 'Heritage'],
+['239.8794695, 34.39073055', 'AD01349', 'Hondo'],     # edited, errors in BOEM data
+['239.832475,  34.37667500', 'AD01349', 'Harmony'],     # edited, errors in BOEM data
+['239.7208167, 34.35039167', 'AD01349', 'Heritage'],  # edited, errors in BOEM data
 ['241.8593139, 33.59578611', 'AD01438', 'Edith'],
 ['240.7237417, 34.11749722', 'AD02302', 'Gina'],
 ['240.5814361, 34.18234167', 'AD02323', 'Gilda'],
-['240.5814361, 34.33188611', 'AD02088', 'A'],
+['240.3875306, 34.33188611', 'AD02088', 'A'],      # edited, initially wrong lon
 ['240.3784639, 34.33234167', 'AD02088', 'B'],
 ['240.3692333, 34.332925  ', 'AD02088', 'C'],
 ['240.3967528, 34.33134444', 'AD02088', 'Hillhouse'],
@@ -63,25 +68,19 @@ StartSites = [
 ['240.5306083, 34.17957222', 'AD02323', 'Grace'], 
 ]
 
-# StartSites = ['-125.74,48.04', '-126.19,47.83', '-126.64,47.62', '-127.09,47.41',
-#               '-127.54,47.20', '-127.99,46.99', '-128.44,46.78', '-125.23,47.66',
-#               '-125.68,47.45', '-126.13,47.24', '-126.58,47.03', '-127.03,46.82',
-#               '-127.48,46.61', '-127.93,46.40', '-128.38,46.19', '-125.13,47.07',
-#               '-125.58,46.86', '-126.03,46.65', '-126.48,46.44', '-126.93,46.23',
-#               '-127.38,46.02', '-127.83,45.81', '-128.28,45.60', '-124.45,46.85',
-#               '-124.90,46.64', '-125.35,46.43', '-125.80,46.22', '-126.25,46.01',
-#               '-125.70,43.70', '-127.00,43.70'] #30 start locations
 # OilType = None
 VariableMass = True  # True if you want GNOME runs with weathering (must have oil-type defined in StartSite)
 waterTemp = 290
 waterSal = 33
-SpillAmount = [1, 'kg']
+# SpillAmount = [1, 'kg']
+SpillAmount = [1400, 'bbl']
 
 NumLEs = 10000 # number of Lagrangian elements you want in the GNOME run
 ReleaseLength = 7*24 # Length of release in hours (0 for instantaneous)
 
 # time span of your data set
-DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2004, 2, 26, 23))
+# DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2004, 2, 26, 23))
+DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2013, 12, 31, 23))
 DataGaps = ( )
 
 # specification for how you want seasons to be defined, as a list of lists:
@@ -90,8 +89,11 @@ DataGaps = ( )
 #    months is a tuple of integers indicating which months are in that season
 Seasons = [
     ['AllYear', [1,2,3,4,5,6,7,8,9,10,11,12]],
-    ['Summer', [6,7,8,9,10,11]],
-    ['Winter', [12,1,2,3,4,5]]
+    # ['Summer', [6,7,8,9,10,11]],
+    # ['Winter', [12,1,2,3,4,5]]
+    ['Summer', [5,6,7,8,9,10]],     # new seasons, defined by wind study
+    ['Winter', [11,12,1,2,3,4]]
+
 ]
 # Seasons = [
 #            ['Spring',  [3, 4, 5 ]],
@@ -110,6 +112,7 @@ NumStarts = 200 # number of start times you want in each season:
 
 # days = [1, 2, 3, 4, 5, 7, 10, 14, 21]
 days = [1, 2, 3, 5, 7, 14, 21]
+
 # days = [1, 3, 5, 7, 10, 15, 20, 30, 50, 70, 90, 120, 135, 150]
 
 # Inputs needed for PyGnome
@@ -154,12 +157,14 @@ TrajectoryRunLength = 24 * max(days)
 TrajectoriesPath = 'Trajectories_n' + str(NumLEs) # relative to RootDir
 MapName = Project + ' TAP'
 CubesPath = 'Cubes_n' + str(NumLEs)
+CubesPath_filt = CubesPath + 'filt'
 CubesRootNames = ['SoCa' for i in StartTimeFiles] # built to match the start time files
 
 # Can be used to filter out some start sites and start times
 # These variables function as an index map
 s0,s1 = [0,len(StartSites)]
 RunSites = range(s0,s1)
+
 r0,r1 = [0,NumStarts]
 RunStarts = range(r0,r1)
 
@@ -170,7 +175,7 @@ CubeType = 'Volume' # should be either "Volume" or "Cumulative"
 ##   float32 gives better precision for lots of LEs
 ##   uint8 saves disk space -- and is OK for about 1000 LEs
 ##   uint16 is a mid-point -- probably good to 10,000 LEs or so
-CubeDataType = 'uint8'
+CubeDataType = 'float32'
 
 # Files with time series records in them used by GNOME
 # These are used to compute the possible time files. The format is:
@@ -246,3 +251,10 @@ if BuildViewer and __name__ == '__main__':
     print "\n---Building Viewer---"
     from tapbuild import BuildViewer
     BuildViewer.main(RootDir, TAPViewerPath, TAPViewerSource, MapFileName, CubesPath, Seasons)
+
+if FilterSites and __name__ == '__main__':
+    print "\n---Filter Sites---"
+    from tapbuild import rec_sites_filter
+    rec_sites_filter.main(os.path.join(RootDir,'site.txt'), MapFileName, 
+                                                os.path.join(RootDir,CubesPath), 
+                                                os.path.join(RootDir,CubesPath_filt))

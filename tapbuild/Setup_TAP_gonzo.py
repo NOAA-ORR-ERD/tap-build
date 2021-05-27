@@ -27,10 +27,10 @@ Data_DirW = "/data/dylan/SoCalTAP/Data/gnome_ucla/wind/"
 if not os.path.exists(Data_DirC):
     raise Exception("RootDir: %s Doesn't exist"%Data_DirC)
 
-BuildStartTimes = False
-RunPyGnome = False
+BuildStartTimes = True
+RunPyGnome = True
 BuildCubes = True
-BuildSite = False
+BuildSite = True
 BuildViewer = False
 
 ###################################
@@ -47,13 +47,13 @@ StartSites = [
 ['239.3191833, 34.46913611', 'AD02286', 'Harvest'],
 ['239.3536111, 34.45550833', 'AD02286', 'Hermosa'],
 ['239.2977111, 34.49501389', 'AD02286', 'Hildago'],
-['239.832475,  34.376675  ', 'AD01349', 'Hondo'],
-['239.7208167, 34.35039167', 'AD01349', 'Harmony'],
-['239.8830025, 34.39073056', 'AD01349', 'Heritage'],
+['239.8794695, 34.39073055', 'AD01349', 'Hondo'],     # edited, errors in BOEM data
+['239.832475,  34.37667500', 'AD01349', 'Harmony'],     # edited, errors in BOEM data
+['239.7208167, 34.35039167', 'AD01349', 'Heritage'],  # edited, errors in BOEM data
 ['241.8593139, 33.59578611', 'AD01438', 'Edith'],
 ['240.7237417, 34.11749722', 'AD02302', 'Gina'],
 ['240.5814361, 34.18234167', 'AD02323', 'Gilda'],
-['240.5814361, 34.33188611', 'AD02088', 'A'],
+['240.3875306, 34.33188611', 'AD02088', 'A'],      # edited, initially wrong lon
 ['240.3784639, 34.33234167', 'AD02088', 'B'],
 ['240.3692333, 34.332925  ', 'AD02088', 'C'],
 ['240.3967528, 34.33134444', 'AD02088', 'Hillhouse'],
@@ -67,19 +67,12 @@ StartSites = [
 ['240.5306083, 34.17957222', 'AD02323', 'Grace'], 
 ]
 
-# StartSites = ['-125.74,48.04', '-126.19,47.83', '-126.64,47.62', '-127.09,47.41',
-#               '-127.54,47.20', '-127.99,46.99', '-128.44,46.78', '-125.23,47.66',
-#               '-125.68,47.45', '-126.13,47.24', '-126.58,47.03', '-127.03,46.82',
-#               '-127.48,46.61', '-127.93,46.40', '-128.38,46.19', '-125.13,47.07',
-#               '-125.58,46.86', '-126.03,46.65', '-126.48,46.44', '-126.93,46.23',
-#               '-127.38,46.02', '-127.83,45.81', '-128.28,45.60', '-124.45,46.85',
-#               '-124.90,46.64', '-125.35,46.43', '-125.80,46.22', '-126.25,46.01',
-#               '-125.70,43.70', '-127.00,43.70'] #30 start locations
 # OilType = None
 VariableMass = True  # True if you want GNOME runs with weathering (must have oil-type defined in StartSite)
 waterTemp = 290
 waterSal = 33
-SpillAmount = [1, 'kg']
+# SpillAmount = [1, 'kg']
+SpillAmount = [1400, 'bbl']
 
 NumLEs = 10000 # number of Lagrangian elements you want in the GNOME run
 ReleaseLength = 7*24 # Length of release in hours (0 for instantaneous)
@@ -97,7 +90,7 @@ Seasons = [
     # ['AllYear', [1,2,3,4,5,6,7,8,9,10,11,12]],
     # ['Summer', [6,7,8,9,10,11]],
     # ['Winter', [12,1,2,3,4,5]]
-    ['Summer', [5,6,7,8,9,10]],
+    ['Summer', [5,6,7,8,9,10]],     # new seasons, defined by wind study
     ['Winter', [11,12,1,2,3,4]]
 
 ]
