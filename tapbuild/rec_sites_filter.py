@@ -173,8 +173,9 @@ def get_ReceptPolys(site_name):
         
         points = []
         for dd in range(cc+1,cc+npts+1):
-            lon,lat = [float(i) for i in (lines[cc+1].strip().split('//')[0].strip().split(','))]
+            lon,lat = [float(i) for i in (lines[dd].strip().split('//')[0].strip().split(','))]
             points.append([lon,lat])
+            print(dd,lon,lat)
 
         poly = Polygon(points)   
         polys.append(poly)
