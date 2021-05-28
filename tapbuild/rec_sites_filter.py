@@ -54,7 +54,7 @@ def rec_sites_filter(site_file,bna_file,cubepath,cubepath_out):
 
     ### write out a new site.txt file  
     head,tail = get_site_headtail(site_file)
-    sitefilenew = os.path.join(cubepath_out,site_file_name + '.new'
+    sitefilenew = os.path.join(cubepath_out,site_file_name + '.new')
     write_site(sitefilenew,recept_polys_filt,head,tail)
 
     print('poly lennnn: ',len(recept_polys_filt))
@@ -154,35 +154,57 @@ def get_ReceptPolys(site_name):
     
     sitefile = open(site_name,'r')
     polys = []
-        
-    for line in sitefile:   # skip header info
-        # print(line)
-        if "SITES" in line:      
+
+    lines = sitefile.readlines()
+    cc = 0
+    for line in lines:
+        cc += 1
+        if "SITES" in line:
             break
     nsites = int(line.split()[0])
     print(nsites)
 
-    # for nn in range(nsites):
-
-    # for line in sitefile.readline():
-    for line in sitefile:
-        if 'CUBES' in line: 
-            break
-
-        site_num = int(line.split('"')[1].strip('#')) - 1   # zero based index
-        npts = int(line.split('"')[-1].strip(','))
+    for nn in range(nsites):
+        npts = int(lines[cc].split('"')[-1].strip(','))
+        
         points = []
-        for ii in range(npts):
-            lon, lat = [float(i) for i in readline_clean(sitefile).split(',')]
+        for range(cc+1,cc+npts+1):
+            lon,lat = [float(i) for i in (lines[cc+1].strip().split('//')[0].strip().split(','))]
             points.append([lon,lat])
-          
-        poly = Polygon(points)
-        # poly = Feature(geometry=Polygon([poly]), site_num=site_num)
-        polys.append(poly)
 
+        poly = Polygon(points)   
+        polys.append(poly)
+        cc += npts
 
     sitefile.close()
     return polys
+
+    # for line in sitefile:   # skip header info
+    #     # print(line)
+    #     if "SITES" in line:      
+    #         break
+    # nsites = int(line.split()[0])
+    # print(nsites)
+
+    # # for line in sitefile.readline():
+    # for line in sitefile:
+    #     if 'CUBES' in line: 
+    #         break
+
+    #     site_num = int(line.split('"')[1].strip('#')) - 1   # zero based index
+    #     npts = int(line.split('"')[-1].strip(','))
+    #     points = []
+    #     for ii in range(npts):
+    #         lon, lat = [float(i) for i in readline_clean(sitefile).split(',')]
+    #         points.append([lon,lat])
+          
+    #     poly = Polygon(points)
+    #     # poly = Feature(geometry=Polygon([poly]), site_num=site_num)
+    #     polys.append(poly)
+
+
+    # sitefile.close()
+    # return polys
 
 def GetNextBNAPolygon(f):
     """

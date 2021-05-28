@@ -255,6 +255,6 @@ if BuildViewer and __name__ == '__main__':
 if FilterSites and __name__ == '__main__':
     print "\n---Filter Sites---"
     from tapbuild import rec_sites_filter
-    rec_sites_filter.main(os.path.join(RootDir,'site.txt'), MapFileName, 
-                                                os.path.join(RootDir,CubesPath), 
-                                                os.path.join(RootDir,CubesPath_filt))
+    rec_sites_filter.rec_sites_filter(os.path.join(RootDir,'site.txt'), MapFileName, 
+                                      os.path.join(RootDir,CubesPath), 
+                                      os.path.join(RootDir,CubesPath_filt))
