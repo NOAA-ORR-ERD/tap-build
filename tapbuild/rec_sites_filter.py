@@ -33,6 +33,10 @@ def rec_sites_filter(site_file,bna_file,cubepath,cubepath_out):
     if not os.path.isdir(cubepath):    
         raise Exception("Cube dir: %s doesn't exist"%cubepath)
     
+    # new dir for filtered cube files
+    if not os.path.isdir(cubepath_out):
+        os.mkdir(cubepath_out)
+
     # tappath = os.path.dirname(site_file)
     site_file_name = os.path.split(site_file)[-1]
     # print(tappath)
@@ -162,19 +166,19 @@ def get_ReceptPolys(site_name):
         if "SITES" in line:
             break
     nsites = int(line.split()[0])
-    print(nsites)
+    # print(nsites)
 
     for nn in range(nsites):
         npts = int(lines[cc].split('"')[-1].strip(','))
         
         points = []
-        for range(cc+1,cc+npts+1):
+        for dd in range(cc+1,cc+npts+1):
             lon,lat = [float(i) for i in (lines[cc+1].strip().split('//')[0].strip().split(','))]
             points.append([lon,lat])
 
         poly = Polygon(points)   
         polys.append(poly)
-        cc += npts
+        cc += npts + 1
 
     sitefile.close()
     return polys

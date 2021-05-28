@@ -157,7 +157,7 @@ TrajectoryRunLength = 24 * max(days)
 TrajectoriesPath = 'Trajectories_n' + str(NumLEs) # relative to RootDir
 MapName = Project + ' TAP'
 CubesPath = 'Cubes_n' + str(NumLEs)
-CubesPath_filt = CubesPath + 'filt'
+CubesPath_filt = CubesPath + '_filt'
 CubesRootNames = ['SoCa' for i in StartTimeFiles] # built to match the start time files
 
 # Can be used to filter out some start sites and start times
