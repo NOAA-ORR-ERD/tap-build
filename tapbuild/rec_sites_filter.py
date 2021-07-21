@@ -52,8 +52,8 @@ def rec_sites_filter(site_file,bna_file,cubepath,cubepath_out):
         bna_polys = rd_bna(bna_file)
         recept_polys_filt,recept_index_filt = filter_ReceptPolys(recept_polys,bna_polys)
                
-        np.save(os.path.join(cubepath,'recept_polys.npy'),recept_polys_filt)
-        np.save(os.path.join(cubepath,'recept_index.npy'),recept_index_filt)
+        np.save(os.path.join(cubepath_out,'recept_polys.npy'),recept_polys_filt)
+        np.save(os.path.join(cubepath_out,'recept_index.npy'),recept_index_filt)
 
 
     ### write out a new site.txt file  
@@ -398,15 +398,22 @@ if __name__ == "__main__":
     site_file = sys.argv[1]   
     if not os.path.isfile(sys.argv[1]):    
         raise Exception("Sitefile: %s doesn't exist"%site_file)
-
+    print('site file:: ',site_file)
 
     if len(sys.argv) < 3:
         raise Exception("Must define path/filename for bna file")
-    
     bna_file = sys.argv[2]    
     if not os.path.isfile(sys.argv[2]):    
         raise Exception("BNA file: %s doesn't exist"%bna_file)
-
-    print('site file:: ',site_file)
+    print('BNA file:: ',bna_file)
     
+
+    cubepath = sys.argv[3]    
+    if not os.path.isdir(sys.argv[3]):    
+        raise Exception("cubepath: %s doesn't exist"%cubepath)
+    print('cubepath:: ',cubepath)
+
+    cubepath_out = sys.argv[4]    
+    print('cubepath_out:: ',cubepath)
+
     rec_sites_filter(site_file,bna_file,cubepath,cubepath_out)
