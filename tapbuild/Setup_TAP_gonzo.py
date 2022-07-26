@@ -29,10 +29,10 @@ Data_DirW = "/data/dylan/SoCalTAP/Data/gnome_ucla/wind/"
 if not os.path.exists(Data_DirC):
     raise Exception("RootDir: %s Doesn't exist"%Data_DirC)
 
-BuildStartTimes = True
+BuildStartTimes = False
 RunPyGnome = True
-BuildCubes = True
-BuildSite = True
+BuildCubes = False
+BuildSite = False
 BuildViewer = False
 
 ###################################
