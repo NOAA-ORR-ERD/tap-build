@@ -3,14 +3,9 @@
 import os
 from datetime import datetime, timedelta
 
-from gnome.scripting import surface_point_line_spill
+import gnome.scripting as gs
 from gnome.outputters import NetCDFOutput
 
-from gnome.model import Model
-from gnome.utilities.remote_data import get_datafile
-from gnome.map import MapFromBNA
-
-from gnome.movers import PyWindMover, RandomMover, PyCurrentMover
 from gnome.environment import GridCurrent, GridWind, Water, Waves
 # from gnome.movers import GridCurrentMover, GridWindMover
 from gnome.weatherers import Evaporation, NaturalDispersion
@@ -34,14 +29,14 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
     run_time = timedelta(hours=TrajectoryRunLength)
     
     # initiate model
-    model = Model(duration=run_time,
+    model = gs.Model(duration=run_time,
                   time_step=model_timestep,
                   uncertain=False)
     
     # determine boundary for model
     print "Adding the map:",MapFileName
-    mapfile = get_datafile(MapFileName)
-    model.map = MapFromBNA(mapfile, refloat_halflife=refloat)
+    # mapfile = get_datafile(MapFileName)
+    model.map = gs.MapFromBNA(MapFileName, refloat_halflife=refloat)
     
     # get time details for forcing files
     Time_MapC = get_Time_Map(current_files)
@@ -104,7 +99,7 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
             g_curr = GridCurrent.from_netCDF(filename=file_list_c,
                                        # dataset=ds_c,
                                        grid_topology={'node_lon':'lonc','node_lat':'latc'})
-            c_mover = PyCurrentMover(current=g_curr, default_num_method='RK4')
+            c_mover = gs.PyCurrentMover(current=g_curr, default_num_method='RK4')
             model.movers += c_mover
 
             print 'creating wind MFDataset'
@@ -113,11 +108,11 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
             g_wind = GridWind.from_netCDF(filename=file_list_w,
                                     # dataset=ds_w,
                                     grid_topology={'node_lon':'lonc','node_lat':'latc'})
-            w_mover = PyWindMover(wind = g_wind, default_num_method='Euler')
+            w_mover = gs.PyWindMover(wind = g_wind, default_num_method='Euler')
             model.movers += w_mover
             
             ## add diffusion
-            model.movers += RandomMover(diffusion_coef=diffusion_coef)
+            model.movers += gs.RandomMover(diffusion_coef=diffusion_coef)
             
             if VariableMass:
                 model.environment += g_wind
@@ -138,6 +133,7 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
                 spill_units = None
                 if VariableMass:
                     start_OilType = StartSites[pos_idx][1]
+                    start_OilFile = StartSites[pos_idx][3]
                     spill_amount = SpillAmount[0]
                     spill_units = SpillAmount[1]
 
@@ -149,13 +145,13 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
                 print "at start location:",start_position
                 
                 ## set the spill to the location
-                spill = surface_point_line_spill(num_elements=NumLEs,
+                spill = gs.surface_point_line_spill(num_elements=NumLEs,
                                                  start_position=(start_position[0], start_position[1], 0.0),
                                                  release_time=start_time,
                                                  end_release_time=start_time+release_duration,
                                                  windage_range=windage_range,
                                                  windage_persist=windage_persist,
-                                                 substance=start_OilType,
+                                                 substance=gs.GnomeOil(start_OilFile,
                                                  amount=spill_amount,
                                                  units=spill_units)
                 

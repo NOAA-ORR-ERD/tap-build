@@ -13,7 +13,9 @@ import numpy as np
 
 # Location to read and write files for this TAP application
 # RootDir = "C:/Users/dylan.righi/Science/TapSites/Socal"
-RootDir = "/data/dylan/TapSites/SoCal"   # Gonzo 
+# RootDir = "/data/dylan/TapSites/SoCal"   # Gonzo 
+RootDir = "/data/dylan/TapSites/SouthernCalifornia"    
+
 
 if not os.path.exists(RootDir):
     os.makedirs(RootDir)
@@ -27,12 +29,11 @@ Data_DirW = "/data/dylan/SoCalTAP/Data/gnome_ucla/wind/"
 if not os.path.exists(Data_DirC):
     raise Exception("RootDir: %s Doesn't exist"%Data_DirC)
 
-BuildStartTimes = False
-RunPyGnome = False
-BuildCubes = False
+BuildStartTimes = True
+RunPyGnome = True
+BuildCubes = True
 BuildSite = True
 BuildViewer = False
-FilterSites = True
 
 ###################################
 ###### **** User Inputs **** ######
@@ -69,14 +70,23 @@ StartSites = [
 ]
 
 # OilType = None
-VariableMass = True  # True if you want GNOME runs with weathering (must have oil-type defined in StartSite)
+VariableMass = True  # True if you want GNOME runs with weathering 
+                     # (must have ADIOS oil json files available )
+if VariableMass:
+    # need to match oil types with oil json files and add filename to StartSites list
+    flist = os.listdir(os.path.join(RootDir,"Oils"))
+    for count,site in enumerate(StartSites):
+        oilf = [i for i in flist if site[1] in i]
+        StartSites[count].append(os.path.join(RootDir,oilf))
+
 waterTemp = 290
 waterSal = 33
 # SpillAmount = [1, 'kg']
-SpillAmount = [1400, 'bbl']
+SpillAmount = [1000, 'bbl']
+
 
 NumLEs = 10000 # number of Lagrangian elements you want in the GNOME run
-ReleaseLength = 7*24 # Length of release in hours (0 for instantaneous)
+ReleaseLength = 5*24 # Length of release in hours (0 for instantaneous)
 
 # time span of your data set
 # DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2004, 2, 26, 23))
@@ -91,8 +101,8 @@ Seasons = [
     ['AllYear', [1,2,3,4,5,6,7,8,9,10,11,12]],
     # ['Summer', [6,7,8,9,10,11]],
     # ['Winter', [12,1,2,3,4,5]]
-    ['Summer', [5,6,7,8,9,10]],     # new seasons, defined by wind study
-    ['Winter', [11,12,1,2,3,4]]
+    # ['Summer', [5,6,7,8,9,10]],     # new seasons, defined by wind study
+    # ['Winter', [11,12,1,2,3,4]]
 
 ]
 # Seasons = [
@@ -143,7 +153,7 @@ refloat = -1
 windage_range = (0.02,0.04)
 windage_persist = 900
 diffusion_coef = 10000  # 1.e4
-model_timestep = 30*60 # timestep in seconds
+model_timestep = 15*60 # timestep in seconds
 
 ##############################################################
 ###### Additional Calculations (and less common inputs) ######
@@ -154,10 +164,9 @@ OutputTimes = [24*i for i in days] # output times in hours (calculated from days
 OutputUserStrings = ['%d days'%i for i in days]
 OutputTimestep = 12 #hours
 TrajectoryRunLength = 24 * max(days)
-TrajectoriesPath = 'Trajectories_n' + str(NumLEs) # relative to RootDir
+TrajectoriesPath = 'TrajectoriesOut'  # relative to RootDir
 MapName = Project + ' TAP'
-CubesPath = 'Cubes_n' + str(NumLEs)
-CubesPath_filt = CubesPath + '_filt'
+CubesPath = 'Cubes'
 CubesRootNames = ['SoCa' for i in StartTimeFiles] # built to match the start time files
 
 # Can be used to filter out some start sites and start times
@@ -251,10 +260,3 @@ if BuildViewer and __name__ == '__main__':
     print "\n---Building Viewer---"
     from tapbuild import BuildViewer
     BuildViewer.main(RootDir, TAPViewerPath, TAPViewerSource, MapFileName, CubesPath, Seasons)
-
-if FilterSites and __name__ == '__main__':
-    print "\n---Filter Sites---"
-    from tapbuild import rec_sites_filter
-    rec_sites_filter.rec_sites_filter(os.path.join(RootDir,'site.txt'), MapFileName, 
-                                      os.path.join(RootDir,CubesPath), 
-                                      os.path.join(RootDir,CubesPath_filt))
