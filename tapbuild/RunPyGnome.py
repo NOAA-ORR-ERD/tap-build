@@ -151,7 +151,7 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
                                                  end_release_time=start_time+release_duration,
                                                  windage_range=windage_range,
                                                  windage_persist=windage_persist,
-                                                 substance=gs.GnomeOil(start_OilFile,
+                                                 substance=gs.GnomeOil(start_OilFile),
                                                  amount=spill_amount,
                                                  units=spill_units)
                 
