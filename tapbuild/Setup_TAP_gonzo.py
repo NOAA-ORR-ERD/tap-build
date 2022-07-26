@@ -77,7 +77,7 @@ if VariableMass:
     flist = os.listdir(os.path.join(RootDir,"Oils"))
     for count,site in enumerate(StartSites):
         oilf = [i for i in flist if site[1] in i]
-        StartSites[count].append(os.path.join(RootDir,oilf))
+        StartSites[count].append(os.path.join(RootDir,oilf[0]))
 
 waterTemp = 290
 waterSal = 33
