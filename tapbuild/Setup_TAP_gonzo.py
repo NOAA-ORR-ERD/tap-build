@@ -38,7 +38,7 @@ BuildViewer = False
 ###################################
 ###### **** User Inputs **** ######
 ###################################
-print "\nAnalyzing User Inputs"
+print("\nAnalyzing User Inputs")
 
 # Spill information
 #StartSites = ['-125.7, 48.2', '-125.15, 47.8', '-125.2, 48.2', '-125, 47.1']
@@ -171,7 +171,8 @@ CubesRootNames = ['SoCa' for i in StartTimeFiles] # built to match the start tim
 
 # Can be used to filter out some start sites and start times
 # These variables function as an index map
-s0,s1 = [0,len(StartSites)]
+# s0,s1 = [0,len(StartSites)]
+s0,s1 = [0,2]
 RunSites = range(s0,s1)
 
 r0,r1 = [0,NumStarts]
@@ -229,12 +230,12 @@ TAPViewerPath = Project + "_TapView"
 ###### Running Scripts ######
 #############################
 if BuildStartTimes and __name__ == '__main__':
-    print "\n---Building Start Times---"
+    print("\n---Building Start Times---")
     from tapbuild import BuildStartTimes
     BuildStartTimes.main(RootDir, DataStartEnd, DataGaps, Seasons, NumStarts, TrajectoryRunLength, TimeSeries)
 
 if RunPyGnome and __name__ == '__main__':
-    print "\n---Running PyGnome---"
+    print("\n---Running PyGnome---")
     from tapbuild import RunPyGnome
     RunPyGnome.main(RootDir, StartSites, RunSites, NumStarts, RunStarts,
                     ReleaseLength, TrajectoryRunLength,
@@ -244,19 +245,19 @@ if RunPyGnome and __name__ == '__main__':
                     VariableMass,waterTemp,waterSal,SpillAmount)
 
 if BuildCubes and __name__ == '__main__':
-    print "\n---Building Cubes---"
+    print("\n---Building Cubes---")
     from tapbuild import BuildCubes
     BuildCubes.main(RootDir, CubesPath, CubesRootNames, CubeType, CubeDataType, Seasons,
                     TrajectoriesPath, ReceptorType, Grid, OilWeatheringType, OutputTimes, NumLEs, VariableMass)
 
 if BuildSite and __name__ == '__main__':
-    print "\n---Building Sites---"
+    print("\n---Building Sites---")
     from tapbuild import BuildSite
     BuildSite.main(RootDir, MapName, MapFileName, MapFileType, NumStarts, Seasons,
                    StartSites, OutputTimes, OutputUserStrings, PresetLOCS,
                    PresetSpillAmounts, ReceptorType, Grid,CubesRootNames)
 
 if BuildViewer and __name__ == '__main__':
-    print "\n---Building Viewer---"
+    print("\n---Building Viewer---")
     from tapbuild import BuildViewer
     BuildViewer.main(RootDir, TAPViewerPath, TAPViewerSource, MapFileName, CubesPath, Seasons)

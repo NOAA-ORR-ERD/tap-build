@@ -34,7 +34,7 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
                   uncertain=False)
     
     # determine boundary for model
-    print "Adding the map:",MapFileName
+    print("Adding the map:",MapFileName)
     # mapfile = get_datafile(MapFileName)
     model.map = gs.MapFromBNA(MapFileName, refloat_halflife=refloat)
     
@@ -49,7 +49,7 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
         SeasonName = Season[1]
         start_times = open(Season[0],'r').readlines()[:NumStarts]
         make_dir(os.path.join(RootDir,TrajectoriesPath,SeasonName))
-        print "  Season:",SeasonName
+        print("  Season: ",SeasonName)
         
         # get and parse start times in this season
         start_dt = []
@@ -71,7 +71,7 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
             start_time = start_dt[time_idx]
             end_time = start_time + run_time
             model.start_time = start_time
-            print "  ",start_time,"to",end_time
+            print("  ",start_time," to ",end_time)
             
 
             # set up the model with the correct forcing files for this time/duration
@@ -79,11 +79,11 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
             file_list_w = get_file_list(start_time,end_time,Time_MapW)
 
 
-            print 'number of ROMS files :: ', len(file_list_c)
-            print file_list_c
+            print('number of ROMS files :: ', len(file_list_c))
+            print(file_list_c)
         
-            print 'number of wind files :: ', len(file_list_w)
-            print file_list_w
+            print('number of wind files :: ', len(file_list_w))
+            print(file_list_w)
             
             # # add wind movers
             # w_mover = PyWindMover(filename=file_list_w)
@@ -93,18 +93,18 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
             # c_mover = PyCurrentMover.from_netCDF(file_list)
             # model.movers += c_mover
             
-            print 'creating curr MFDataset'
+            print('creating curr MFDataset')
             ds_c = nc4.MFDataset(file_list_c)
-            print 'adding a CurrentMover (Trapeziod/RK4):'
+            print('adding a CurrentMover (Trapeziod/RK4):')
             g_curr = GridCurrent.from_netCDF(filename=file_list_c,
                                        # dataset=ds_c,
                                        grid_topology={'node_lon':'lonc','node_lat':'latc'})
             c_mover = gs.PyCurrentMover(current=g_curr, default_num_method='RK4')
             model.movers += c_mover
 
-            print 'creating wind MFDataset'
+            print('creating wind MFDataset')
             ds_w = nc4.MFDataset(file_list_w)
-            print 'adding a WindMover (Euler):'
+            print('adding a WindMover (Euler):')
             g_wind = GridWind.from_netCDF(filename=file_list_w,
                                     # dataset=ds_w,
                                     grid_topology={'node_lon':'lonc','node_lat':'latc'})
@@ -127,7 +127,7 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
                 # timer3 = datetime.now()
                 
                 start_position = [float(i) for i in StartSites[pos_idx][0].split(',')]
-                print start_position
+                print(start_position)
                 start_OilType = None
                 spill_amount = None
                 spill_units = None
@@ -140,9 +140,9 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
                 OutDir = os.path.join(RootDir,TrajectoriesPath,SeasonName,'pos_%03i'%(pos_idx+1))
                 make_dir(OutDir)
                 
-                print "    ",pos_idx,time_idx
-                print "    Running: start time:",start_time,
-                print "at start location:",start_position
+                print("    ",pos_idx,time_idx)
+                print("    Running: start time:",start_time)
+                print("at start location: ",start_position)
                 
                 ## set the spill to the location
                 spill = gs.surface_point_line_spill(num_elements=NumLEs,
