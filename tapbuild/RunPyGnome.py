@@ -142,7 +142,8 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
                 
                 print("    ",pos_idx,time_idx)
                 print("    Running: start time:",start_time)
-                print("at start location: ",start_position)
+                print("      at start location: ",start_position)
+                print("      with oil ",start_OilFile)
                 
                 ## set the spill to the location
                 spill = gs.surface_point_line_spill(num_elements=NumLEs,
