@@ -494,7 +494,7 @@ def CompTAPIICube(FileList, OutputTimes, Receptors):
         HitTable[:] = -1 # set HitTable to "nothing"
         #raw_input("created the hit table:  hit enter to continue")
         (Trajectory,(NumTimesteps,NumLEs),HeaderData,flags) = ReadTrajectory(FileList[SpillNum],1,HeaderData)
-        print "read the trajectory"
+        print("read the trajectory")
         #raw_input("About to compute hits: hit enter to continue")
         Receptors.comp_hits(Trajectory, HitTable)
         del Trajectory # don't need it anymore -- do need the memory
@@ -716,13 +716,13 @@ def CompThicknessCube(FileList, OutputTimes, Grid, Weather=None, VariableMass=No
     Cube = np.zeros((NumTimes,NumSites,NumSpills), np.float32)
 
     start = time.time() # just for timing how long it takes to run
-    print OutputSteps
+    print(OutputSteps)
 
     ## Loop through each individual trajectory
     for SpillNum in range(NumSpills):
         #print "computing spill number %i"%(SpillNum,)
         # read new trajectory file:
-        print "working with file:", FileList[SpillNum]
+        print("working with file: ", FileList[SpillNum])
         traj_file = nc_particles.Reader(FileList[SpillNum])
         VolTable = np.zeros((NumSites), np.float32) # this will store the Maximum volume in each grid box.
 
@@ -743,7 +743,7 @@ def CompThicknessCube(FileList, OutputTimes, Grid, Weather=None, VariableMass=No
                     #print "weathering the LEs"
                     LE_mass = Weather.weather(LE_mass, LE_age)
                 elif VariableMass:   
-                    print "using variable mass/density from trajectory file"
+                    print("using variable mass/density from trajectory file")
                     # LE_mass = LE_vars['mass']
                     LE_mass = LE_vars['mass']/LE_vars['density']*6.29   # from kg to bbls
                     
@@ -776,7 +776,7 @@ class Grid:
     num_cells = property(_get_num_cells)
     
     def WriteBNA(self, file):
-        print "Writing the BNA data"
+        print("Writing the BNA data")
         self.dlat =  float(self.max_lat- self.min_lat ) / self.num_lat
         self.dlong = float(self.max_long-self.min_long) / self.num_long
         polynum = 1
@@ -924,16 +924,16 @@ def test1():
 
     CR.Grid_hit_test(LE1, LE2, grid, Hit_Table)
     Hit_Table.shape = (2,num_long,num_lat)
-    print "after:\n", Hit_Table[0,:,:]
-    print "after:\n", Hit_Table[1,:,:]
+    print("after:\n", Hit_Table[0,:,:])
+    print("after:\n", Hit_Table[1,:,:])
 
 
 def test_bin_LE():
     test_file_name = "../Tests/BINARY_LE_TEST.FORCST"
     
     LEs, Beached = read_binLE(test_file_name)
-    print LEs
-    print Beached
+    print(LEs)
+    print(Beached)
     
 
 if __name__ == "__main__":
