@@ -6,7 +6,7 @@ def main(RootDir, MapName, MapFileName, MapFileType, NumStarts, Seasons, StartSi
          OutputTimes, OutputUserStrings, PresetLOCS, PresetSpillAmounts, ReceptorType,
          Grid,CubesRootNames):
 
-    print "starting"
+    print("starting")
     
     StartTimeFiles = [(os.path.join(RootDir, s[0]+'Starts.txt'), s[0]) for s in Seasons]
     # CubesRootNames = ["Arc_" for i in StartTimeFiles] # built to match the start time files
@@ -49,7 +49,7 @@ def main(RootDir, MapName, MapFileName, MapFileType, NumStarts, Seasons, StartSi
     # write cube locations:
     file.write("%i CUBES\n"%len(StartSites))
     
-    print "Writing the start sites"
+    print("Writing the start sites")
     for site in StartSites:
         # file.write(site[0] + "\n")
         sss = ''
