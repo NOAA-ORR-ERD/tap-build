@@ -664,7 +664,7 @@ def CompThicknessCubeTimestepOld(Grid, LE_positions, LE_mass=None, flags=None, f
     
     return Vol.reshape(num_long, num_lat) 
 
-from from tapbuild.tap_comp_volume import comp_volume
+from tapbuild.tap_comp_volume import comp_volume
 #from cy_tap_comp_volume import comp_volume
 
 from post_gnome import nc_particles
