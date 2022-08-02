@@ -40,7 +40,7 @@ def comp_volume(positions, mass, flags, grid, flag_bitmask_to_ignore = 1+4+8+16)
     mass_grid = np.zeros((num_long, num_lat), dtype = np.float32)
     
     # loop through the LEs
-    for i in xrange(len(positions)):
+    for i in range(len(positions)):
         #print "checking LE:", i
         # check the flag:
         if (flag_bitmask_to_ignore & flags[i]):
