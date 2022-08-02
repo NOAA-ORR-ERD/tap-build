@@ -24,7 +24,8 @@ import os
 import numpy as np
 from time import time
 
-import tap_mod,   oil_weathering
+from tapbuild import tap_mod  
+from tapbuild import oil_weathering
 
 
 def main(RootDir, CubesPath, CubesRootNames, CubeType, CubeDataType, Seasons, TrajectoriesPath,
