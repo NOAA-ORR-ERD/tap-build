@@ -580,9 +580,9 @@ def CompThicknessCubeOld(FileList, OutputTimes, Grid, Weather = None, data_type=
         #del flags
 
         ## Step through the Cube output time steps
-        for step in xrange( len(OutputSteps) -1 ):
+        for step in range( len(OutputSteps) -1 ):
             ## step through the Trajectory time steps between each Cube Timestep
-            for t in xrange(OutputSteps[step], OutputSteps[step+1]):
+            for t in range(OutputSteps[step], OutputSteps[step+1]):
                 Vol = np.zeros((NumSites), np.int32) # this stores the volume (number of LEs)
                 LEs = Trajectory[t,:,:] # the slice out of the Trajectory array for this time step
                 LE_flags = flags[t,:]
@@ -615,7 +615,7 @@ def CompThicknessCubeOld(FileList, OutputTimes, Grid, Weather = None, data_type=
                 # The Volumes of the LEs that are in the grid
                 LE_Vol = np.take(Weathered_Vol, InGrid)
                 ## add the volume of each LE to the total volume in it's grid box
-                for k in xrange(len(site_ind)):
+                for k in range(len(site_ind)):
                     Vol[site_ind[k]] += LE_Vol[k]
                 ## put the Volume in the grid box only if it's larger than the volume there
                 VolTable = np.maximum(Vol, VolTable)
@@ -659,7 +659,7 @@ def CompThicknessCubeTimestepOld(Grid, LE_positions, LE_mass=None, flags=None, f
     # The Volumes of the LEs that are in the grid
     LE_Vol = np.take(Weathered_Vol, InGrid)
     ## add the volume of each LE to the total volume in it's grid box
-    for k in xrange(len(site_ind)):
+    for k in range(len(site_ind)):
         Vol[site_ind[k]] += LE_Vol[k]
     
     return Vol.reshape(num_long, num_lat) 
@@ -727,9 +727,9 @@ def CompThicknessCube(FileList, OutputTimes, Grid, Weather=None, VariableMass=No
         VolTable = np.zeros((NumSites), np.float32) # this will store the Maximum volume in each grid box.
 
         ## Step through the Cube output time steps
-        for step in xrange( len(OutputSteps) - 1 ):
+        for step in range( len(OutputSteps) - 1 ):
             ## step through the Trajectory time steps between each Cube Timestep
-            for t in xrange(OutputSteps[step], OutputSteps[step+1]):
+            for t in range(OutputSteps[step], OutputSteps[step+1]):
                 LE_vars = traj_file.get_timestep(t,variables=['longitude','latitude','age','status_codes','mass','density'])
                 LE_lat = LE_vars['latitude']
                 LE_long = LE_vars['longitude']
