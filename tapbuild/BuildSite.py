@@ -41,7 +41,8 @@ def main(RootDir, MapName, MapFileName, MapFileType, NumStarts, Seasons, StartSi
     # now write the BNA of the receptor sites:
     if ReceptorType == "Grid":
         #file.write("This is where the receptors go\n")
-        from batch_gnome import tap_mod
+        # from batch_gnome import tap_mod
+        from tapbuild import tap_mod
         Receptors = tap_mod.Grid(Grid.min_long, Grid.max_long, Grid.min_lat, Grid.max_lat,Grid.num_lat,Grid.num_long)
         file.write("%i SITES // number of sites\n"%Receptors.num_cells)
         Receptors.WriteBNA(file)
