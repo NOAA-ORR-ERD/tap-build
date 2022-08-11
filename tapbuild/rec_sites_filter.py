@@ -414,6 +414,6 @@ if __name__ == "__main__":
     print('cubepath:: ',cubepath)
 
     cubepath_out = sys.argv[4]    
-    print('cubepath_out:: ',cubepath)
+    print('cubepath_out:: ',cubepath_out)
 
     rec_sites_filter(site_file,bna_file,cubepath,cubepath_out)

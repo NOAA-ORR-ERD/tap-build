@@ -67,6 +67,10 @@ StartSites = [
 ['240.5997833, 34.12510833', 'AD02298', 'Gail'],
 # ['237.4821722, 34.17957222', 'AD02323', 'Grace'], # initially wrong long
 ['240.5306083, 34.17957222', 'AD02323', 'Grace'], 
+['239.3089, 34.6412', 'AD02286', 'Pipeline - Irene'], 
+['239.8970, 34.4103', 'AD01349', 'Pipeline - Hondo/Harmony/Heritage'],
+['240.497,  34.3267', 'AD02088', 'Pipeline - Hillhouse/A/B/C'],
+['241.8978, 33.67  ', 'AD01438', 'Pipeline - Edith/Ellen/Eureka']
 ]
 
 # OilType = None
@@ -99,12 +103,10 @@ DataGaps = ( )
 #    months is a tuple of integers indicating which months are in that season
 Seasons = [
     ['AllYear', [1,2,3,4,5,6,7,8,9,10,11,12]],
-    # ['Summer', [6,7,8,9,10,11]],
-    # ['Winter', [12,1,2,3,4,5]]
     # ['Summer', [5,6,7,8,9,10]],     # new seasons, defined by wind study
     # ['Winter', [11,12,1,2,3,4]]
-
 ]
+
 # Seasons = [
 #            ['Spring',  [3, 4, 5 ]],
 #            ['Summer',  [6, 7, 8 ]],
