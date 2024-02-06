@@ -12,7 +12,7 @@ random.seed(1) # so that all runs get the same sequence
 def main(RootDir, DataStartEnd, DataGaps, Seasons, NumStarts, TrajectoryRunLength, TimeSeries):
     
     RunTime = timedelta(hours = TrajectoryRunLength)
-    print RunTime   
+    print(RunTime)   
     
     if TimeSeries is None:
         Start, End = DataStartEnd
@@ -96,8 +96,8 @@ class GapSet:
     def TimeInGap(self, time, span = timedelta(0)):
         start = time
         end = time + span
-        print "start:", start
-        print "end:", end
+        print("start:", start)
+        print("end:", end)
         for gap in self.Gaps:
             if end < gap[0] or  start > gap[1]:
                 continue
@@ -106,7 +106,7 @@ class GapSet:
         return False
 
 def GetTimes(filename, type):
-    print "loading data from :",filename
+    print("loading data from :",filename)
     data = open(filename).readlines()
     Times = []
     if type == "Hyd":
@@ -139,9 +139,9 @@ def FindGaps():
         if gaps.End < End:
             End = gaps.End
             
-    print " the overlap in the records is:"
-    print "Start:", Start
-    print "End:  ", End
+    print(" the overlap in the records is:")
+    print("Start:", Start)
+    print("End:  ", End)
     
     # Merge the Gaps
     
@@ -156,14 +156,14 @@ def FindStarts(RootDir, Start, End, AllGaps, RunTime, NumStarts, Seasons):
     StartHours = []
     StartTimes = [[] for i in range(len(Seasons))]
     Done = 0
-    print TotalHours
+    print(TotalHours)
     while not Done:
         StartHour = random.randint(0,TotalHours)
         if not StartHour in StartHours:
             StartHours.append(StartHour)
             if len(StartHours) >= TotalHours:
-                print "I can't find %i valid starts in the records!"%NumStarts
-                print StartHours,TotalHours
+                print("I can't find %i valid starts in the records!") %NumStarts
+                print(StartHours,TotalHours)
                 raise ValueError()
             StartTime = Start + timedelta(hours = StartHour)
             if not AllGaps.TimeInGap(StartTime,RunTime):
@@ -171,7 +171,7 @@ def FindStarts(RootDir, Start, End, AllGaps, RunTime, NumStarts, Seasons):
                     if StartTime.month in Seasons[i][1]:
                         StartTimes[i].append(StartTime)
                         if len(StartTimes[i]) >= NumStarts:
-                            print "done with", Seasons[i][0]
+                            print("done with", Seasons[i][0])
                             Seasons[i][1] = []
                         StillToDo = 0
                         for season in Seasons:
@@ -180,19 +180,19 @@ def FindStarts(RootDir, Start, End, AllGaps, RunTime, NumStarts, Seasons):
                         if not StillToDo:
                             Done = 1
             else:
-                print StartTime, "is in a gap"
+                print(StartTime, "is in a gap")
     for i in range(len(Seasons)):
         stats = {}
         outfilename = os.path.join(RootDir, Seasons[i][0]+"Starts.txt")
         outfile = open(outfilename, 'w')
-        print "Writing:", outfilename
+        print("Writing:", outfilename)
         #print Seasons[i][0]
         for time in StartTimes[i]:
             stats[time.year] = stats.setdefault(time.year, 1) + 1
             outfile.write(time.strftime('%Y, %m, %d, %H, %M\n'))
         outfile.close()
         for year, num in stats.items():
-            print year, num
+            print(year, num)
 
 def Timedelta2Hours(delta):
     return int(round(delta.days*24 + delta.seconds/3600.))
