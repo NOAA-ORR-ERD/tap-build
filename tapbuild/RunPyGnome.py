@@ -6,13 +6,12 @@ from datetime import datetime, timedelta
 import gnome.scripting as gs
 from gnome.outputters import NetCDFOutput
 
-from gnome.environment import GridCurrent, GridWind, Water, Waves
+# from gnome.environment import GridCurrent, GridWind, Water, Waves
 # from gnome.movers import GridCurrentMover, GridWindMover
 from gnome.weatherers import Evaporation, NaturalDispersion
 
 import netCDF4 as nc4
-
-import gc
+import gc  # garbage collector
 
 
 def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
@@ -39,8 +38,8 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
     model.map = gs.MapFromBNA(MapFileName, refloat_halflife=refloat)
     
     # get time details for forcing files
-    Time_MapC = get_Time_Map(current_files)
-    Time_MapW = get_Time_Map(wind_files)
+    Time_MapC = get_Time_MapC(current_files)
+    Time_MapW = get_Time_MapW(wind_files)
         
     # loop through seasons
     for Season in StartTimeFiles:
@@ -93,22 +92,24 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
             # c_mover = PyCurrentMover.from_netCDF(file_list)
             # model.movers += c_mover
             
-            print('creating curr MFDataset')
-            ds_c = nc4.MFDataset(file_list_c)
+            # print('creating curr MFDataset')
+            # ds_c = nc4.MFDataset(file_list_c)
             print('adding a CurrentMover (Trapeziod/RK4):')
-            g_curr = GridCurrent.from_netCDF(filename=file_list_c,
-                                       # dataset=ds_c,
-                                       grid_topology={'node_lon':'lonc','node_lat':'latc'})
-            c_mover = gs.PyCurrentMover(current=g_curr, default_num_method='RK4')
+            g_curr = gs.GridCurrent.from_netCDF(filename=file_list_c,
+                                    # dataset=ds_c,
+                                    # grid_topology={'node_lon':'lonc','node_lat':'latc'}
+                                    )
+            c_mover = gs.CurrentMover(current=g_curr, default_num_method='RK4')
             model.movers += c_mover
 
-            print('creating wind MFDataset')
-            ds_w = nc4.MFDataset(file_list_w)
+            # print('creating wind MFDataset')
+            # ds_w = nc4.MFDataset(file_list_w)
             print('adding a WindMover (Euler):')
-            g_wind = GridWind.from_netCDF(filename=file_list_w,
+            g_wind = gs.GridWind.from_netCDF(filename=file_list_w,
                                     # dataset=ds_w,
-                                    grid_topology={'node_lon':'lonc','node_lat':'latc'})
-            w_mover = gs.PyWindMover(wind = g_wind, default_num_method='Euler')
+                                    # grid_topology={'node_lon':'lonc','node_lat':'latc'}
+                                    )
+            w_mover = gs.WindMover(wind = g_wind, default_num_method='Euler')
             model.movers += w_mover
             
             ## add diffusion
@@ -116,8 +117,8 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
             
             if VariableMass:
                 model.environment += g_wind
-                water = Water(temperature=waterTemp,salinity=waterSal)
-                waves = Waves(g_wind)
+                water = gs.Water(temperature=waterTemp,salinity=waterSal)
+                waves = gs.Waves(g_wind)
                 model.weatherers += Evaporation(water=water,wind=g_wind)
                 model.weatherers += NaturalDispersion(waves=waves)
 
@@ -184,15 +185,26 @@ def make_dir(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-def get_Time_Map(file_list):
+def get_Time_MapC(file_list):
     Time_Map = []
     for fn in file_list:
-        d = nc4.Dataset(fn)
-        t = d['time']
-        file_start_time = nc4.num2date(t[0], units=t.units)
+        # d = nc4.Dataset(fn)
+        # t = d['time']
+        # file_start_time = nc4.num2date(t[0], units=t.units)
+        print(fn)
+        gcur = gs.GridCurrent.from_netCDF(fn)
+        file_start_time = gcur.time.data[0]
         Time_Map.append( (file_start_time, fn) )
     return Time_Map
 
+def get_Time_MapW(file_list):
+    Time_Map = []
+    for fn in file_list:
+        print(fn)
+        gwin = gs.GridWind.from_netCDF(fn)
+        file_start_time = gwin.time.data[0]
+        Time_Map.append( (file_start_time, fn) )
+    return Time_Map
 
 def get_file_list(start_time,end_time,Time_Map):    
     file_list = []
