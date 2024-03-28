@@ -9,6 +9,7 @@ from gnome.outputters import NetCDFOutput
 # from gnome.environment import GridCurrent, GridWind, Water, Waves
 # from gnome.movers import GridCurrentMover, GridWindMover
 from gnome.weatherers import Evaporation, NaturalDispersion
+from gnome.environment import IceConcentration, IceVelocity
 
 import netCDF4 as nc4
 import gc  # garbage collector
@@ -84,28 +85,26 @@ def main(RootDir, StartSites, RunSites, NumStarts, RunStarts, ReleaseLength,
             print('number of wind files :: ', len(file_list_w))
             print(file_list_w)
             
-            # print('creating curr MFDataset')
-            # ds_c = nc4.MFDataset(file_list_c)
-            print('adding a CurrentMover (Trapeziod/RK4):')
-            g_curr = gs.GridCurrent.from_netCDF(filename=file_list_c,
-                                    # dataset=ds_c,
-                                    # grid_topology={'node_lon':'lonc','node_lat':'latc'}
-                                    )
+            
+            # ICE details...special handling needed because of Lake Erie FVCOM variable names
+            icon = IceConcentration.from_netCDF(filename=file_list_c,varname='aice')
+            ivel = IceVelocity.from_netCDF(filename=file_list_c, varnames=['uuice', 'vvice'])
+            
+            print('adding an IceAwareCurrent:')
+            g_curr = gs.IceAwareCurrent.from_netCDF(filename=file_list_c,
+                                                    ice_concentration=icon,ice_velocity=ivel)
             c_mover = gs.CurrentMover(current=g_curr, default_num_method='RK4')
             model.movers += c_mover
-
-            # print('creating wind MFDataset')
-            # ds_w = nc4.MFDataset(file_list_w)
-            print('adding a WindMover (Euler):')
-            g_wind = gs.GridWind.from_netCDF(filename=file_list_w,
-                                    # dataset=ds_w,
-                                    # grid_topology={'node_lon':'lonc','node_lat':'latc'}
-                                    )
+            
+            print('adding an IceAwareWind:')
+            g_wind = gs.IceAwareWind.from_netCDF(filename=file_list_w,
+                                                    ice_concentration=icon,ice_velocity=ivel)         
             w_mover = gs.WindMover(wind = g_wind, default_num_method='Euler')
             model.movers += w_mover
             
             ## add diffusion
-            model.movers += gs.RandomMover(diffusion_coef=diffusion_coef)
+            model.movers += gs.IceAwareRandomMover(ice_concentration=icon,
+                                                   diffusion_coef=diffusion_coef)
             
             if VariableMass:
                 model.environment += g_wind
