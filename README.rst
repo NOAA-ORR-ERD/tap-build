@@ -30,6 +30,10 @@ Features
 
 * TODO
 
+Overview
+--------
+.. image:: docs/TAP_structure__1_.jpg
+    
 Credits
 ---------
 
