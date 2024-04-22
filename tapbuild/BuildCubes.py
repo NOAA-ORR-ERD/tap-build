@@ -62,7 +62,7 @@ def main(RootDir, CubesPath, CubesRootNames, CubeType, CubeDataType, Seasons, Tr
                 CubesList.append((TrajName, CubeName, Months))
         print(len(CubesList))
     
-    
+    CubesList.sort()
                 
     if ReceptorType == "Grid":
         
