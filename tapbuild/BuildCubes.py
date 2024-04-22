@@ -90,6 +90,7 @@ def main(RootDir, CubesPath, CubesRootNames, CubeType, CubeDataType, Seasons, Tr
                 # TrajFiles = [os.path.join(TrajFilesDir, "time%03i.nc"%(i+1)) for i in range(setup.NumStarts)]
     
                 TrajFiles = [os.path.join(TrajFilesDir,i) for i in os.listdir(TrajFilesDir)]
+                TrajFiles.sort()
                 
                 # filter TrajFiles list
                 # if setup.CubeStartFilter:
