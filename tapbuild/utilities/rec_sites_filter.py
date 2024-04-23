@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
 """
-!!!!!  This is an old version
-!!!!!  Current version is in tapbuild package
-!!!!!
 Script to parse a TAP set-up to filter out receptor sites that are all land. Needs 
 a site.txt and bna file. Makes assumptions about the TAP folder structure. 
 """
@@ -25,24 +22,29 @@ from descartes.patch import PolygonPatch
 
 
 
-def rec_sites_filter(site_file,bna_file):
+def rec_sites_filter(site_file,bna_file,cubepath,cubepath_out):
     
-    print("!!! Old version of htis script. Current is in tapbuild package !!!")
- 
     if not os.path.isfile(site_file):    
         raise Exception("Sitefile: %s doesn't exist"%site_file)
 
     if not os.path.isfile(bna_file):    
         raise Exception("BNA file: %s doesn't exist"%bna_file)
     
-    tappath = os.path.dirname(site_file)
-    tapsite = os.path.split(tappath)[-1]
+    if not os.path.isdir(cubepath):    
+        raise Exception("Cube dir: %s doesn't exist"%cubepath)
+    
+    # new dir for filtered cube files
+    if not os.path.isdir(cubepath_out):
+        os.mkdir(cubepath_out)
+
+    # tappath = os.path.dirname(site_file)
+    site_file_name = os.path.split(site_file)[-1]
     # print(tappath)
 
-    if os.path.isfile(os.path.join(tappath,'recept_index.npy')):
+    if os.path.isfile(os.path.join(cubepath,'recept_index.npy')):
         print('loading previously run filtered polys/index')
-        recept_index_filt = np.load(os.path.join(tappath,'recept_index.npy'))
-        recept_polys_filt = np.load(os.path.join(tappath,'recept_polys.npy'))
+        recept_index_filt = np.load(os.path.join(cubepath,'recept_index.npy'))
+        recept_polys_filt = np.load(os.path.join(cubepath,'recept_polys.npy'))
 
     else:
         print('calculating filter polys/index')
@@ -50,13 +52,13 @@ def rec_sites_filter(site_file,bna_file):
         bna_polys = rd_bna(bna_file)
         recept_polys_filt,recept_index_filt = filter_ReceptPolys(recept_polys,bna_polys)
                
-        np.save(os.path.join(tappath,'recept_polys.npy'),recept_polys_filt)
-        np.save(os.path.join(tappath,'recept_index.npy'),recept_index_filt)
+        np.save(os.path.join(cubepath_out,'recept_polys.npy'),recept_polys_filt)
+        np.save(os.path.join(cubepath_out,'recept_index.npy'),recept_index_filt)
 
 
     ### write out a new site.txt file  
     head,tail = get_site_headtail(site_file)
-    sitefilenew = site_file + '.new'
+    sitefilenew = os.path.join(cubepath_out,site_file_name + '.new')
     write_site(sitefilenew,recept_polys_filt,head,tail)
 
     print('poly lennnn: ',len(recept_polys_filt))
@@ -84,25 +86,23 @@ def rec_sites_filter(site_file,bna_file):
 
    
     # new dir for filtered cube files
-    filt_dir = os.path.join(tappath,'TAPDATA_filt')
-    if not os.path.isdir(filt_dir):
-        os.mkdir(filt_dir)
+    if not os.path.isdir(cubepath_out):
+        os.mkdir(cubepath_out)
 
     # loop through all the season dirs
     for season in season_names:
-        spath = os.path.join(tappath,'TAPDATA',season)
-        # spath = os.path.join(tappath,'Cubes',season)
+        spath = os.path.join(cubepath,season)
         print(spath)
         cubefiles = os.listdir(spath)
         print(cubefiles)
 
         # make new dir for TAPDATA/this season
-        new_path = os.path.join(tappath,'TAPDATA_filt',season)
+        new_path = os.path.join(cubepath_out,season)
         if not os.path.isdir(new_path):
             os.mkdir(new_path)
 
         for cubefile in cubefiles:
-            if cubefile[-4:].lower() == '.bin':     # # 7/20/22 - G.K. - forced to lowercase extension comparing
+            if cubefile[-4:] == '.bin':
                 print(cubefile)
                 cube = np.fromfile(os.path.join(spath,cubefile),dtype=np.float32)
        
@@ -158,35 +158,58 @@ def get_ReceptPolys(site_name):
     
     sitefile = open(site_name,'r')
     polys = []
-        
-    for line in sitefile:   # skip header info
-        # print(line)
-        if "SITES" in line:      
+
+    lines = sitefile.readlines()
+    cc = 0
+    for line in lines:
+        cc += 1
+        if "SITES" in line:
             break
     nsites = int(line.split()[0])
-    print(nsites)
+    # print(nsites)
 
-    # for nn in range(nsites):
-
-    # for line in sitefile.readline():
-    for line in sitefile:
-        if 'CUBES' in line: 
-            break
-
-        site_num = int(line.split('"')[1].strip('#')) - 1   # zero based index
-        npts = int(line.split('"')[-1].strip(','))
+    for nn in range(nsites):
+        npts = int(lines[cc].split('"')[-1].strip(','))
+        
         points = []
-        for ii in range(npts):
-            lon, lat = [float(i) for i in readline_clean(sitefile).split(',')]
+        for dd in range(cc+1,cc+npts+1):
+            lon,lat = [float(i) for i in (lines[dd].strip().split('//')[0].strip().split(','))]
             points.append([lon,lat])
-          
-        poly = Polygon(points)
-        # poly = Feature(geometry=Polygon([poly]), site_num=site_num)
-        polys.append(poly)
+            # print(dd,lon,lat)
 
+        poly = Polygon(points)   
+        polys.append(poly)
+        cc += npts + 1
 
     sitefile.close()
     return polys
+
+    # for line in sitefile:   # skip header info
+    #     # print(line)
+    #     if "SITES" in line:      
+    #         break
+    # nsites = int(line.split()[0])
+    # print(nsites)
+
+    # # for line in sitefile.readline():
+    # for line in sitefile:
+    #     if 'CUBES' in line: 
+    #         break
+
+    #     site_num = int(line.split('"')[1].strip('#')) - 1   # zero based index
+    #     npts = int(line.split('"')[-1].strip(','))
+    #     points = []
+    #     for ii in range(npts):
+    #         lon, lat = [float(i) for i in readline_clean(sitefile).split(',')]
+    #         points.append([lon,lat])
+          
+    #     poly = Polygon(points)
+    #     # poly = Feature(geometry=Polygon([poly]), site_num=site_num)
+    #     polys.append(poly)
+
+
+    # sitefile.close()
+    # return polys
 
 def GetNextBNAPolygon(f):
     """
@@ -375,15 +398,22 @@ if __name__ == "__main__":
     site_file = sys.argv[1]   
     if not os.path.isfile(sys.argv[1]):    
         raise Exception("Sitefile: %s doesn't exist"%site_file)
-
+    print('site file:: ',site_file)
 
     if len(sys.argv) < 3:
         raise Exception("Must define path/filename for bna file")
-    
     bna_file = sys.argv[2]    
     if not os.path.isfile(sys.argv[2]):    
         raise Exception("BNA file: %s doesn't exist"%bna_file)
-
-    print('site file:: ',site_file)
+    print('BNA file:: ',bna_file)
     
-    rec_sites_filter(site_file,bna_file)
+
+    cubepath = sys.argv[3]    
+    if not os.path.isdir(sys.argv[3]):    
+        raise Exception("cubepath: %s doesn't exist"%cubepath)
+    print('cubepath:: ',cubepath)
+
+    cubepath_out = sys.argv[4]    
+    print('cubepath_out:: ',cubepath_out)
+
+    rec_sites_filter(site_file,bna_file,cubepath,cubepath_out)
