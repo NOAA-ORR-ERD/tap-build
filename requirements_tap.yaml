@@ -1,0 +1,95 @@
+
+#########################################################
+# Documents the conda packages required for TAP-build
+#
+#  This environment builds upon the PyGNOME environment 
+#  (excluding _build, _test, _docs packages) and includes 
+#  packages for post_gnome as well
+
+# create an environmemnt:
+#   conda env create -n gnome_tap --file requirements_tap.yaml
+#
+# Within gnome_tap environment, clone and install 
+# (1) tap-build and (2) post-gnome to their own directories:
+#   $ conda activate gnome_tap
+#   $ git clone ssh://git@gitlab.orr.noaa.gov:9933/gnome/tap/tapbuild.git
+#   $ cd tapbuild
+#   $ pip install -e ./
+#   $ cd ../
+#   $ git clone ssh://git@gitlab.orr.noaa.gov:9933/gnome/post_gnome.git
+#   $ cd post_gnome 
+#   $ pip install -e ./
+#
+# Start tap dancing!
+#########################################################
+
+name: gnome_tap
+
+channels:
+- conda-forge
+- defaults
+ 
+
+dependencies:
+- python>=3.9,<3.12
+- pip
+
+## System libs
+- colander <2
+- progressbar
+- psutil
+- python-dateutil
+- pyzmq
+# Needed for multiprocessing, which is currently broken
+# pyzmq
+# tornado
+# tblib
+
+## Base numerical libs
+- numpy
+- scipy
+
+## Modeling libs
+- gsw
+- netCDF4
+- trimesh
+ 
+## Spatial Libs
+- geojson
+- geopandas
+- mapbox_earcut
+- pyogrio
+- pyproj
+- shapely
+
+# NOAA maintained packages
+- gridded>=0.6.5
+- pynucos=3.2.*
+- cell_tree2d
+- py_gd>=2.2
+- adios_db>=1.1
+
+## TAP libs
+- pip
+- bumpversion
+- wheel
+- watchdog
+- flake8
+- tox
+- coverage
+- Sphinx
+- matplotlib # post_gnome
+- pyshp # post_gnome
+- pytest # post_gnome
+- pyyaml # post_gnome
+- cartopy # post_gnome
+ 
+#- pip:
+#  - git+https://gitlab.orr.noaa.gov/gnome/post_gnome/post_gnome
+
+prefix: /Users/rachael.mueller/GNOME/tapbuild/requirements_tap.yaml
+
+
+
+
+
