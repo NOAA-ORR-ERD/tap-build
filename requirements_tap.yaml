@@ -5,13 +5,19 @@
 #  This environment builds upon the PyGNOME environment 
 #  (excluding _build, _test, _docs packages) and includes 
 #  packages for post_gnome as well
-
+#
 # create an environmemnt:
 #   conda env create -n gnome_tap --file requirements_tap.yaml
 #
+# Install pygnome in this environment
+#   $ conda activate gnome_tap
+#   $ cd ../pygnome/py_gnome
+#   $ git checkout develop 
+#   $ python setup.py cleanall # remove this step if pip installing within yaml
+#   $ python setup.py develop
+#
 # Within gnome_tap environment, clone and install 
 # (1) tap-build and (2) post-gnome to their own directories:
-#   $ conda activate gnome_tap
 #   $ git clone ssh://git@gitlab.orr.noaa.gov:9933/gnome/tap/tapbuild.git
 #   $ cd tapbuild
 #   $ pip install -e ./
@@ -19,8 +25,8 @@
 #   $ git clone ssh://git@gitlab.orr.noaa.gov:9933/gnome/post_gnome.git
 #   $ cd post_gnome 
 #   $ pip install -e ./
-#
-# Start tap dancing!
+#  
+# Now you can start tap dancing!
 #########################################################
 
 name: gnome_tap
@@ -68,6 +74,12 @@ dependencies:
 - cell_tree2d
 - py_gd>=2.2
 - adios_db>=1.1
+
+# Required to build PyGNOME
+# NOTE: you also need a compiler set up to build Python extensions
+- cython=3.*
+- setuptools>=62  # older versions uses different build dirs
+- gitpython
 
 ## TAP libs
 - pip
