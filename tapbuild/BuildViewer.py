@@ -19,7 +19,7 @@ def main(RootDir, TAPViewerPath, TAPViewerSource, MapFileName, CubesPath, Season
 
     #Check if TAP Viewer Dir exists:
     if not os.path.isdir(TAPViewerDir):
-        print "making new TAP Viewer Directory"
+        print("making new TAP Viewer Directory")
         os.mkdir(TAPViewerDir)
 
     # copy the exe and settings files
@@ -29,7 +29,7 @@ def main(RootDir, TAPViewerPath, TAPViewerSource, MapFileName, CubesPath, Season
     # Check for TAPDATA
     TAPDATADir = os.path.join(TAPViewerDir,"TAPDATA")
     if not os.path.isdir(TAPDATADir):
-        print "Making TAPDATA Directory"
+        print("Making TAPDATA Directory")
         os.mkdir(TAPDATADir)
 
     # copy the TAPCONFIG file
@@ -49,13 +49,13 @@ def main(RootDir, TAPViewerPath, TAPViewerSource, MapFileName, CubesPath, Season
     for (season, junk) in Seasons:
         SeasonPath = os.path.join(TAPDATADir,season)
         if not os.path.isdir(SeasonPath):
-            print "Creating:", SeasonPath
+            print("Creating:", SeasonPath)
             os.mkdir(SeasonPath)
         SeasonCubesPath = os.path.join(FullCubesPath,season)
-        print SeasonPath, SeasonCubesPath
+        print(SeasonPath, SeasonCubesPath)
         
         for name in os.listdir(SeasonCubesPath):
-            print "Moving:", name
+            print("Moving:", name)
             shutil.move(os.path.join(SeasonCubesPath,name),
                          os.path.join(SeasonPath,name) )
 
