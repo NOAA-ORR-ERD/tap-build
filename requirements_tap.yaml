@@ -15,8 +15,12 @@
 #   $ git checkout develop 
 #   $ python setup.py cleanall # remove this step if pip installing within yaml
 #   $ python setup.py develop
+#  
+# NOTE: This file requires the user to have a SSH key in GitLab, e.g. see:
+#  https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 #
-# Within gnome_tap environment, clone and install 
+# Without an SSH key, comment out the `-pip:` section and, 
+# within the gnome_tap environment, clone and install 
 # (1) tap-build and (2) post-gnome to their own directories:
 #   $ git clone ssh://git@gitlab.orr.noaa.gov:9933/gnome/tap/tapbuild.git
 #   $ cd tapbuild
