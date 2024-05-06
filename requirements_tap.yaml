@@ -37,7 +37,7 @@ channels:
  
 
 dependencies:
-- python>=3.9,<3.12
+- python=3.11.*
 - pip
 
 ## System libs
@@ -75,7 +75,7 @@ dependencies:
 - py_gd>=2.2
 - adios_db>=1.1
 
-# Required to build PyGNOME
+# Required to build PyGNOME and TAP_build
 # NOTE: you also need a compiler set up to build Python extensions
 - cython=3.*
 - setuptools>=62  # older versions uses different build dirs
@@ -95,12 +95,9 @@ dependencies:
 - pytest # post_gnome
 - pyyaml # post_gnome
 - cartopy # post_gnome
- 
-#- pip:
-#  - git+https://gitlab.orr.noaa.gov/gnome/post_gnome/post_gnome
 
-prefix: /Users/rachael.mueller/GNOME/tapbuild/requirements_tap.yaml
-
+- pip:
+     - "git+https://gitlab.orr.noaa.gov/gnome/post_gnome#egg=post_gnome"
 
 
 
