@@ -97,7 +97,8 @@ dependencies:
 - cartopy # post_gnome
 
 - pip:
-     - "git+https://gitlab.orr.noaa.gov/gnome/post_gnome#egg=post_gnome"
+     - "post_gnome@git+https://gitlab.orr.noaa.gov/gnome/post_gnome"
+
 
 
 
