@@ -118,7 +118,11 @@ Seasons = [
 #             ['Apr', [4]],
 #             ['May', [5]],
 #           ]
-NumStarts = 200 # number of start times you want in each season:
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+# Number of runs
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+NumStarts = 10 # number of start times you want in each season:
 
 # days = [1, 2, 3, 4, 5, 7, 10, 14, 21]
 days = [1, 2, 3, 5, 7, 14, 21]
