@@ -11,8 +11,7 @@ random.seed(1) # so that all runs get the same sequence
 
 def main(RootDir, DataStartEnd, DataGaps, Seasons, NumStarts, TrajectoryRunLength, TimeSeries):
     
-    RunTime = timedelta(hours = TrajectoryRunLength)
-    print(RunTime)   
+    RunTime = timedelta(hours = TrajectoryRunLength) 
     
     if TimeSeries is None:
         Start, End = DataStartEnd
@@ -156,50 +155,63 @@ def FindStarts(RootDir, Start, End, AllGaps, RunTime, NumStarts, Seasons):
     StartHours = []
     StartTimes = [[] for i in range(len(Seasons))]
     
-    # # RDM Added
-    StartHours = random.sample(range(0,TotalHours), NumStarts)
-    StartTimes[0] = [Start + timedelta(hours = hour) for hour in StartHours]
-    # print(f"Start: {Start}")
+    # # # RDM Added
+    # StartHours = random.sample(range(0,TotalHours), NumStarts)
+    # StartTimes = [Start + timedelta(hours = hour) for hour in StartHours]
+    # # print(f"Start: {Start}")
     
     # # RDM commented out
-    # Done = 0
-    # while not Done:
-    #     StartHour = random.randint(0,TotalHours)
-    #     if not StartHour in StartHours:
-    #         StartHours.append(StartHour)
-    #         if len(StartHours) >= TotalHours:
-    #             print(len(StartHours))
-    #             print(f"I can't find {NumStarts} valid starts in the records!")
-    #             print(StartHours,TotalHours)
-    #             raise ValueError()
-    #         StartTime = Start + timedelta(hours = StartHour)
-    #         if not AllGaps.TimeInGap(StartTime,RunTime):
-    #             for i in range(len(Seasons)):
-    #                 if StartTime.month in Seasons[i][1]:
-    #                     StartTimes[i].append(StartTime)
-    #                     if len(StartTimes[i]) >= NumStarts:
-    #                         print("done with", Seasons[i][0])
-    #                         Seasons[i][1] = []
-    #                     StillToDo = 0
-    #                     for season in Seasons:
-    #                         if season[1]:
-    #                             StillToDo = 1
-    #                     if not StillToDo:
-    #                         Done = 1
-    #         else:
-    #             print(StartTime, "is in a gap")
+    Done = 0
+    while not Done:
+        StartHour = random.randint(0,TotalHours)
+        if not StartHour in StartHours:
+            StartHours.append(StartHour)
+            if len(StartHours) >= TotalHours:
+                #print(f"I can't find {NumStarts} valid starts in the records!")
+                raise ValueError(
+                    f"I can't find {NumStarts} \
+                    valid starts in the records!"
+                )
+            StartTime = Start + timedelta(hours = StartHour)
+            if not AllGaps.TimeInGap(StartTime,RunTime):
+                for i in range(len(Seasons)):
+                    try: # more than one season
+                        if StartTime.month in Seasons[i][1]:
+                            StartTimes[i].append(StartTime)
+                            if len(StartTimes[i]) > NumStarts:
+                                print("done with", Seasons[i][0])
+                                Seasons[i][1] = []
+                            StillToDo = 0
+                            for season in Seasons:
+                                if season[1]:
+                                    StillToDo = 1
+                            if not StillToDo:
+                                Done = 1
+                    except: # only one season
+                        if StartTime.month in Seasons[1]:
+                            StartTimes[i].append(StartTime)
+                            if len(StartTimes[i]) > NumStarts:
+                                print("done with", Seasons[0])
+                                Seasons[1] = []
+                                Done = 1
+                            StillToDo = 0
+                            
+            else:
+                print(StartTime, "is in a gap")
     for i in range(len(Seasons)):
         stats = {}
-        outfilename = os.path.join(RootDir, Seasons[i][0]+"Starts.txt")
+        try: # more than one season
+            outfilename = os.path.join(RootDir, Seasons[i][0]+"Starts.txt")
+        except: # one season
+            outfilename = os.path.join(RootDir, Seasons[0]+"Starts.txt")
         outfile = open(outfilename, 'w')
         print("Writing:", outfilename)
-        #print Seasons[i][0]
+        
         for time in StartTimes[i]:
             stats[time.year] = stats.setdefault(time.year, 1) + 1
             outfile.write(time.strftime('%Y, %m, %d, %H, %M\n'))
         outfile.close()
-        for year, num in stats.items():
-            print(year, num)
+        
 
 def Timedelta2Hours(delta):
     return int(round(delta.days*24 + delta.seconds/3600.))
