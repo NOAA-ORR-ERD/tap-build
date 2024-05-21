@@ -25,7 +25,7 @@ def main(
     OutputTimestep,VariableMass,waterTemp,waterSal,SpillAmount):
     # timingRecord = open(os.path.join(RootDir,"timing.txt"),"w")
     # count = len(StartTimeFiles) * len(RunStarts) * len(RunSites)
-    # timingRecord.write("This file tracks the time to process "+str(count)+" gnome runs")
+    # timingRecord.write("This file tracks the time to process "+str(count)+" gnome runs")  
     
     # model timing
     release_duration = timedelta(hours=ReleaseLength)
@@ -60,11 +60,11 @@ def main(
             start_time = [int(i) for i in start_time.split(',')]
             start_time = datetime(start_time[0],start_time[1],start_time[2],start_time[3],start_time[4])
             start_dt.append(start_time)
-        print(RunStarts, ": ", start_time)
+        #print(RunStarts, ": ", start_time)
         ## loop through start times
         for time_idx in RunStarts:
-            print(time_idx)
-            # timer2 = datetime.now()
+            print(
+                f"~~~ Spill {time_idx} of {RunStarts[-1]+1} ~~~")
             
             gc.collect()
             model.movers.clear()
@@ -129,7 +129,9 @@ def main(
             ## loop through start locations
             for pos_idx in RunSites:
                 
-                start_position = [float(i) for i in StartSites[pos_idx][0].split(',')]
+                start_position = [
+                    float(i) for i in StartSites[pos_idx][0].split(',')
+                ]
                 print(start_position)
                 start_OilType = None
                 spill_amount = None
@@ -140,7 +142,9 @@ def main(
                 spill_amount = SpillAmount[0]
                 spill_units = SpillAmount[1]
 
-                OutDir = os.path.join(RootDir,TrajectoriesPath,SeasonName,'pos_%03i'%(pos_idx+1))
+                OutDir = os.path.join(
+                    RootDir,TrajectoriesPath,SeasonName,'pos_%03i'%(pos_idx+1)
+                )
                 make_dir(OutDir)
                 
                 print("    ",pos_idx,time_idx)
@@ -201,6 +205,13 @@ def main(
 def make_dir(path):
     if not os.path.exists(path):
         os.makedirs(path)
+    else:
+        if len(os.listdir(path)) > 0:
+            print("***************************")
+            print("*********  WARNING *********") 
+            print("***************************")
+            print(f"Files exist in:") 
+            print(path)         
 
 def get_Time_MapC(file_list):
     Time_Map = []
