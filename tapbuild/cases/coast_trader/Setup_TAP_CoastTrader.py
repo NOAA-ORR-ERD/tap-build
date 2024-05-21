@@ -21,12 +21,12 @@ RootDir = "/Users/rachael.mueller/Projects/SpillScenarioFiles/2024/CoastTrader"
 OutputDir = "/Users/rachael.mueller/Projects/SpillScenarioFiles/2024/CoastTrader/TAP_test"
 # upwelling case zuvts_his_Rachael_Exp42d_NNNN.nc with NNNN from 2801-2862
 
-case = "upwelling" #"downwelling"#
+
 density = 0.99 #g/cm3 (https://adios.orr.noaa.gov/oils/EC00540)
 total_tonnes = 492
 
 # ~~~~~~~~  CURRENTS ~~~~~~~~~
-Data_DirC = RootDir + f"/model_input/WCOFS_current/{case}/" 
+Data_DirC = RootDir + "/model_input/WCOFS_current/up_down_welling/" 
 current_files = []
 for ftmp in  os.listdir(Data_DirC):
     if ftmp[-3:] == '.nc':
@@ -55,13 +55,18 @@ BuildCubes = True
 BuildSite = True
 BuildViewer = False
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+# Number of runs
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+NumStarts = int(100) # number of start times you want in each season:
+
+
 ###################################
 ###### **** User Inputs **** ######
 ###################################
-print("\nAnalyzing User Inputs")
 
 # Spill information
-StartSites = [[ '-125.691, 48.27','','Coast Trader Location'],]
+StartSites = [[ '-125.691, 48.27','AD02052','Coast Trader Location'],]
 
 VariableMass = True #True  # True if you want GNOME runs with weathering 
                      # (must have ADIOS oil json files available )
@@ -71,18 +76,6 @@ SpillAmount = [1000, 'bbl']
 NumLEs = 1000 # number of Lagrangian elements you want in the GNOME run
 ReleaseLength = 0 # Length of release in hours (0 for instantaneous)
 
-# specification for how you want seasons to be defined, as a list of lists:
-#  [name, (months) ]
-#    name is a string for the season name  
-#    months is a tuple of integers indicating which months are in that season
-Seasons = [
-   ['Upwelling',  [6]],
-   ['Downwelling',  [1]]
-]
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
-# Number of runs
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
-NumStarts = int(200) # number of start times you want in each season:
 
 # these are the days used to create the data cube
 days = [1, 2, 3, 5, 7]
@@ -102,10 +95,7 @@ OilWeatheringType = None
 ###### Additional Calculations (and less common inputs) ######
 ##############################################################
 Project = os.path.basename(OutputDir)
-StartTimeFiles = [
-    (os.path.join(OutputDir, s[0]+'Starts.txt'), s[0]) 
-    for s in Seasons
-]
+
 OutputTimes = [24*i for i in days] # output times in hours 
 OutputUserStrings = ['%d days'%i for i in days]
 OutputTimestep = 4 #hours
@@ -113,8 +103,6 @@ TrajectoryRunLength = 24 * max(days)
 TrajectoriesPath = 'TrajectoriesOut'  # relative to RootDir
 MapName = Project + 'Coast Trader TAP'
 CubesPath = 'Cubes'
-# Cube root names are built to match the start time files
-CubesRootNames = ['coast_trader' for i in StartTimeFiles] 
 
 # Can be used to filter out some start sites and start times
 # These variables function as an index map
@@ -136,17 +124,16 @@ class Grid:
 	pass
 
 Grid.min_lat = 46.2583 # Astoria-ish # decimal degrees
-Grid.max_lat = 49.281 # Tofino-ish
+Grid.max_lat = 49.75 
 Grid.min_long = -127.338
 Grid.max_long = -124.001
-N_km = 5  # ~2 km is ~55 cells per degree north
+N_km = 2.5  # ~2 km is ~55 cells per degree north
 Ncells_lat = 110 * (Grid.max_lat - Grid.min_lat) / N_km
 Grid.dlat = (Grid.max_lat - Grid.min_lat)/Ncells_lat 
 # 2570/N_km #2570 from Google Earth.  Eventually update with function. 
 Ncells_lon = 100 
 # 2.33km at 30N, 2.25km at 36N
 Grid.dlong = (Grid.max_long - Grid.min_long)/Ncells_lon       
-print(f"N_lat = {Ncells_lat}, N_lon = {Ncells_lon}")
 
 Grid.num_lat = int(
     np.ceil(np.abs(Grid.max_lat - Grid.min_lat)/Grid.dlat) + 1
@@ -170,103 +157,125 @@ TAPViewerPath = Project + "_TapView"
 # Loop through seasons and run scripts for each season
 #########################################################################
 
-for case in ["upwelling", "downwelling"]:
-    # "upwelling case completed 199 runs before throwing an error
-    # Adding this to keep setup but skip to downwelling
-    if case == "upwelling":
-        continue
+# "upwelling case completed 199 runs before throwing an error
+# Adding this to keep setup but skip to downwelling
+# if case == "upwelling":
+#     continue
 
-    print(f"~~~~~~  start {case} case ~~~~~~")
-    # time span of your data set
-    # DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2004, 2, 26, 23))
-    if case=="upwelling":
-        DataStartEnd = (
-            datetime(2016, 6, 1, 1), datetime(2016, 6, 23, 23)
-        )
-    else:
-        DataStartEnd = (
-            datetime(2016, 1, 1, 1), datetime(2016, 1, 24, 23)
-        )
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Build start times
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# time span of your data set
+# DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2004, 2, 26, 23))
+
+# specification for how you want seasons to be defined, as a list of lists:
+#  [name, (months) ]
+#    name is a string for the season name  
+#    months is a tuple of integers indicating which months are in that season
+Seasons = [
+   ['Upwelling',  [6]],
+   ['Downwelling',  [1]]
+]
+
+StartTimeFiles = [
+    (os.path.join(OutputDir, s[0]+'Starts.txt'), s[0]) 
+    for s in Seasons
+]
+
+for Season in StartTimeFiles:
+    print(Season)
     
-    DataGaps = ( )
-
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Build start times
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    if BuildStartTimes and __name__ == '__main__':
-        print("---Building Start Times---")
-        from tapbuild import BuildStartTimes
+DataGaps = ( )
+print(f"---Run length = {TrajectoryRunLength} hours---")       
+if BuildStartTimes and __name__ == '__main__':
+    from tapbuild import BuildStartTimes
+    for season in Seasons:
+        print(f"---Building Start Times for {season[0]}---") 
+        if season[0]=="Upwelling":
+            DataStartEnd = (
+                datetime(2016, 6, 1, 1), 
+                datetime(2016, 6, 30, 23)
+            )
+        else:
+            DataStartEnd = (
+                datetime(2016, 1, 1, 1), 
+                datetime(2016, 1, 31, 23)
+            )
         BuildStartTimes.main(
             OutputDir, DataStartEnd, DataGaps, 
-            Seasons, NumStarts, TrajectoryRunLength, 
+            season, NumStarts, TrajectoryRunLength, 
             TimeSeries
         )
 
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Run PyGNOME
-    end_time = time.time()
-    elapsed = (end_time - start_time)/3600
-    print(f'Time up to running PyGNOME: {elapsed} hrs')
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    if RunPyGnome and __name__ == '__main__':
-        print("\n---Running PyGnome---")
-        from tapbuild import RunPyGnome_CoastTrader as RunPyGnome
-        RunPyGnome.main(
-            OutputDir, StartSites, RunSites, NumStarts, RunStarts,
-            ReleaseLength, TrajectoryRunLength, StartTimeFiles, 
-            TrajectoriesPath, NumLEs, MapFileName, refloat, 
-            current_files, wind_files, oil_file, diffusion_coef,
-            model_timestep, windage_range, windage_persist, 
-            OutputTimestep, VariableMass,waterTemp,waterSal,
-            SpillAmount
-        )
-    
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Build Cubes
-    end_time = time.time()
-    elapsed = (end_time - start_time)/3600
-    print(f'Time up to building Cubes: {elapsed} hrs')
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    if BuildCubes and __name__ == '__main__':
-        print("\n---Building Cubes---")
-        from tapbuild import BuildCubes
-        BuildCubes.main(
-            OutputDir, CubesPath, CubesRootNames, CubeType, 
-            CubeDataType, Seasons, TrajectoriesPath, ReceptorType, 
-            Grid, OilWeatheringType, OutputTimes, NumLEs, VariableMass)
-    
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Build Site
-    end_time = time.time()
-    elapsed = (end_time - start_time)/3600
-    print(f'Time up to building Site: {elapsed} hrs')
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    if BuildSite and __name__ == '__main__':
-        print("\n---Building Sites---")
-        from tapbuild import BuildSite
-        BuildSite.main(
-            OutputDir, MapName, MapFileName, MapFileType, NumStarts, 
-            Seasons, StartSites, OutputTimes, OutputUserStrings, 
-            PresetLOCS, PresetSpillAmounts, ReceptorType, Grid,
-            CubesRootNames
-        )
-    
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Build Viewer
-    end_time = time.time()
-    elapsed = (end_time - start_time)/3600
-    print(f'Time up to building Viewer: {elapsed} hrs')
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    if BuildViewer and __name__ == '__main__':
-        print("\n---Building Viewer---")
-        from tapbuild import BuildViewer
-        BuildViewer.main(
-            OutputDir, TAPViewerPath, TAPViewerSource, MapFileName, 
-            CubesPath, Seasons
-        )
-    
-    end_time = time.time()
-    
-    elapsed = (end_time - start_time)/3600
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Run PyGNOME
+end_time = time.time()
+elapsed = (end_time - start_time)/3600
+print(f'Time up to running PyGNOME: {elapsed} hrs')
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+if RunPyGnome and __name__ == '__main__':
+    print("\n---Running PyGnome---")
+    from tapbuild.cases.coast_trader import RunPyGnome_CoastTrader as RunPyGnome
+    RunPyGnome.main(
+        OutputDir, StartSites, RunSites, NumStarts, RunStarts,
+        ReleaseLength, TrajectoryRunLength, StartTimeFiles, 
+        TrajectoriesPath, NumLEs, MapFileName, refloat, 
+        current_files, wind_files, oil_file, diffusion_coef,
+        model_timestep, windage_range, windage_persist, 
+        OutputTimestep, VariableMass,waterTemp,waterSal,
+        SpillAmount
+    )
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Build Cubes
+end_time = time.time()
+elapsed = (end_time - start_time)/3600
+print(f'Time up to building Cubes: {elapsed} hrs')
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Cube root names are built to match the start time files
+CubesRootNames = ['coast_trader' for i in StartTimeFiles] 
+
+if BuildCubes and __name__ == '__main__':
+    print("\n---Building Cubes---")
+    from tapbuild import BuildCubes
+    BuildCubes.main(
+        OutputDir, CubesPath, CubesRootNames, CubeType, 
+        CubeDataType, Seasons, TrajectoriesPath, ReceptorType, 
+        Grid, OilWeatheringType, OutputTimes, NumLEs, VariableMass)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Build Site
+end_time = time.time()
+elapsed = (end_time - start_time)/3600
+print(f'Time up to building Site: {elapsed} hrs')
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+if BuildSite and __name__ == '__main__':
+    print("\n---Building Sites---")
+    from tapbuild import BuildSite
+    BuildSite.main(
+        OutputDir, MapName, MapFileName, MapFileType, NumStarts, 
+        Seasons, StartSites, OutputTimes, OutputUserStrings, 
+        PresetLOCS, PresetSpillAmounts, ReceptorType, Grid,
+        CubesRootNames
+    )
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Build Viewer
+end_time = time.time()
+elapsed = (end_time - start_time)/3600
+print(f'Time up to building Viewer: {elapsed} hrs')
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+if BuildViewer and __name__ == '__main__':
+    print("\n---Building Viewer---")
+    from tapbuild import BuildViewer
+    BuildViewer.main(
+        OutputDir, TAPViewerPath, TAPViewerSource, MapFileName, 
+        CubesPath, Seasons
+    )
+
+end_time = time.time()
+
+elapsed = (end_time - start_time)/3600
 
 print(f'Total time: {elapsed} hrs')
