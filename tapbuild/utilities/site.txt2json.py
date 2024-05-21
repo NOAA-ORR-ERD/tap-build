@@ -151,6 +151,8 @@ with open(infilename, 'r') as sitefile:
     # This should skip over the receptor sites definitions
     data["bounding_box"],data["num_sites"],n_cubes = sites2geojson(sitefile, bna_filename)
     print("bounding box of sites is:", data["bounding_box"])
+    print(data["name"])
+
 
     if data["name"] == "Socal TAP" or data["name"] == "Southern California" or data["name"] == "LakeErie TAP" :
         # data["oil_types"] = []
@@ -160,6 +162,14 @@ with open(infilename, 'r') as sitefile:
         #                             }
         #                             for j, lin in enumerate(sitefile)]
 
+        data["source_locations"] = [{"name": lin[3].strip(),
+                                    "coordinates": [float(j) for j in lin[0:2]],
+                                    "oil_type": lin[2].strip()
+                                    }
+                                    for lin in (readline_clean(sitefile).split(',') for i in range(n_cubes))
+                                   ]
+    
+    elif data["name"] == "TAP_testCoast Trader TAP":
         data["source_locations"] = [{"name": lin[3].strip(),
                                     "coordinates": [float(j) for j in lin[0:2]],
                                     "oil_type": lin[2].strip()

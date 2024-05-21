@@ -156,12 +156,12 @@ def FindStarts(RootDir, Start, End, AllGaps, RunTime, NumStarts, Seasons):
     StartHours = []
     StartTimes = [[] for i in range(len(Seasons))]
     
-    # RDM Added
+    # # RDM Added
     StartHours = random.sample(range(0,TotalHours), NumStarts)
     StartTimes[0] = [Start + timedelta(hours = hour) for hour in StartHours]
-    print(f"Start: {Start}")
+    # print(f"Start: {Start}")
     
-    # RDM commented out
+    # # RDM commented out
     # Done = 0
     # while not Done:
     #     StartHour = random.randint(0,TotalHours)

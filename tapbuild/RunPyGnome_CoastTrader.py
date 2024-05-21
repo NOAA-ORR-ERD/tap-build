@@ -60,9 +60,10 @@ def main(
             start_time = [int(i) for i in start_time.split(',')]
             start_time = datetime(start_time[0],start_time[1],start_time[2],start_time[3],start_time[4])
             start_dt.append(start_time)
-        
+        print(RunStarts, ": ", start_time)
         ## loop through start times
         for time_idx in RunStarts:
+            print(time_idx)
             # timer2 = datetime.now()
             
             gc.collect()
@@ -92,7 +93,7 @@ def main(
             # print('creating curr MFDataset')
             # ds_c = nc4.MFDataset(file_list_c)
             print('adding a CurrentMover (Trapeziod/RK4):')
-            print(f" Current file: {current_files}")
+            # print(f" Current file: {current_files}")
             g_curr = gs.GridCurrent.from_netCDF(
                          data_file = current_files, #file_list_c,
                          grid_file = grid_file
