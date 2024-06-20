@@ -1,10 +1,10 @@
-pip
-bumpversion
-wheel
+numpy
 watchdog
 flake8
 tox
 coverage
-Sphinx
+sphinx
+pyyaml
+
 
 

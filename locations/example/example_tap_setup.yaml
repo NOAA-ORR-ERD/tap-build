@@ -1,0 +1,92 @@
+CubeDataType: float32
+CubeType: Volume
+CubesPath: Cubes
+CubesRootNames:
+- SoCa
+- SoCa
+DataDir: !!python/object/apply:pathlib.PosixPath
+- data
+DataGaps: []
+DataStartEnd: !!python/tuple
+- 2004-01-01 01:00:00
+- 2013-12-31 23:00:00
+MapName: . TAP
+NumStarts: 20
+OilWeatheringType: null
+OutputTimes:
+- 24
+- 48
+- 72
+- 120
+- 168
+OutputTimestep: 12
+OutputUserStrings:
+- 1 output_times_in_days
+- 2 output_times_in_days
+- 3 output_times_in_days
+- 5 output_times_in_days
+- 7 output_times_in_days
+Path: !!python/name:pathlib.Path ''
+PresetLOCS:
+- 5 barrels
+- 10 barrels
+- 20 barrels
+PresetSpillAmounts:
+- 1000 barrels
+- 100 barrels
+Project: .
+ReceptorType: Grid
+ReleaseLength: 120
+RootDir: !!python/object/apply:pathlib.PosixPath []
+RunSites: !!python/object/apply:builtins.range
+- 0
+- 2
+- 1
+RunStarts: !!python/object/apply:builtins.range
+- 0
+- 20
+- 1
+Seasons:
+- - Summer
+  - - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+- - Winter
+  - - 12
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+SpillAmount: !!python/tuple
+- 1000
+- bbl
+StartSites:
+- - -117.211873
+  - 32.682502
+  - AD01438
+  - Ellen
+- - -117.226992
+  - 32.676416
+  - AD01438
+  - Elly
+StartTimeFiles:
+- !!python/tuple
+  - ./SummerStarts.txt
+  - Summer
+- !!python/tuple
+  - ./WinterStarts.txt
+  - Winter
+TimeSeries: null
+TrajectoriesPath: TrajectoriesOut
+TrajectoryRunLength: 168
+datetime: !!python/name:datetime.datetime ''
+np: !!python/module:numpy ''
+os: !!python/module:os ''
+r0: 0
+r1: 20
+s0: 0
+s1: 2

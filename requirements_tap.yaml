@@ -87,13 +87,12 @@ dependencies:
 
 ## TAP libs
 - pip
-- bumpversion
 - wheel
 - watchdog
 - flake8
 - tox
 - coverage
-- Sphinx
+- sphinx
 - matplotlib # post_gnome
 - pyshp # post_gnome
 - pytest # post_gnome
