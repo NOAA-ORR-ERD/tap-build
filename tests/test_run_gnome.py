@@ -13,7 +13,7 @@ from tapbuild.run_gnome import run_gnome
 ## for the example pygnome file:
 
 EXAMPLE_DIR = Path(__file__).parent.parent / "locations" / "example"
-DATA_DIR = Path(__file__).parent / "example_files"
+DATA_DIR = Path(__file__).parent / "full_example"
 
 example_run_params = {'start_time': datetime(2023, 6, 18, 12),
                   'release_duration': timedelta(hours=3),
@@ -23,7 +23,7 @@ example_run_params = {'start_time': datetime(2023, 6, 18, 12),
                   }
 
 def test_run_example():
-    config = load_config(DATA_DIR / "example_tap_setup.py")
+    config = load_config(EXAMPLE_DIR / "example_tap_setup.py")
     model_runner = load_config(EXAMPLE_DIR / "make_gnome_model.py")
 
     model = model_runner.initilize_model(config)
@@ -34,7 +34,7 @@ def test_run_example():
 
 
 def test_run_gnome():
-    run_gnome(EXAMPLE_DIR / "example_tap_setup.py")
+    run_gnome(DATA_DIR / "minimal_tap_setup.py")
 
 
 

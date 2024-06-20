@@ -44,7 +44,7 @@ namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
 
 
 [project.scripts]
-tap_build = "tapbuild.cli:main"
+tapbuild = "tapbuild.cli:main"
 
 [tool.tox]
 legacy_tox_ini = """

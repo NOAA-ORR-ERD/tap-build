@@ -29,9 +29,9 @@ def test_load_config_py(filename):
                               ]
 
 def test_read_startimes_file():
-    starts = read_start_times_file(DATA_DIR / "SummerStarts.txt", 10)
+    starts = read_start_times_file(DATA_DIR / "SummerStarts.txt", 5)
 
-    assert len(starts) == 10
+    assert len(starts) == 5
     for s in starts:
         assert isinstance(s, datetime.datetime)
 

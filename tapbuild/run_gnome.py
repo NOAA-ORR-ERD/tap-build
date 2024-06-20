@@ -24,6 +24,8 @@ def run_gnome(config_file):
     print("loading: ", config_file)
     config = load_config(config_file)
 
+    print(f"{config.pygnome_script=}")
+
     model_runner = load_config(config.pygnome_script)
 
     # timingRecord = open(os.path.join(RootDir,"timing.txt"),"w")
