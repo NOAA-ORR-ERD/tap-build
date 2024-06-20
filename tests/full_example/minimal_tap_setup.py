@@ -81,7 +81,13 @@ TrajectoryRunLength = max(OutputTimes)
 TrajectoriesPath = RootDir / 'TrajectoriesOut'  # relative to RootDir
 MapName = Project + ' TAP'
 CubesPath = 'Cubes'
-CubesRootNames = [f'{i}' for i in StartTimeFiles] # built to match the start time files
+CubesRootNames = ['MIN_' for i in StartTimeFiles] # built to match the start time files
+
+VariableMass = True  # True if you want GNOME runs with weathering
+                     # (must have ADIOS oil json files available )
+
+SpillAmount = (1000, 'bbl')
+NumLEs = 1000 # number of Lagrangian elements you want in the GNOME run
 
 
 ## Cube Builder Data
@@ -91,18 +97,18 @@ CubeDataType = 'float32'
 
 TimeSeries = None
 
-# # If ReceptorType is Grid, you need these, it defines the GRID
-# class Grid:
-# 	pass
-# Grid.min_lat = 32.0 # decimal degrees
-# Grid.max_lat = 35.5
-# Grid.dlat = 0.02       #  makes 2.23km tall receptor cells at 33N
-# Grid.min_long = 238.5
-# Grid.max_long = 243.74
-# Grid.dlong = 0.025       # 2.33km at 30N, 2.25km at 36N
+# If ReceptorType is Grid, you need these, it defines the GRID
+class Grid:
+	pass
+Grid.min_lat = 32.0 # decimal degrees
+Grid.max_lat = 35.5
+Grid.dlat = 0.02       #  makes 2.23km tall receptor cells at 33N
+Grid.min_long = 238.5
+Grid.max_long = 243.74
+Grid.dlong = 0.025       # 2.33km at 30N, 2.25km at 36N
 
-# Grid.num_lat = int(np.ceil(np.abs(Grid.max_lat - Grid.min_lat)/Grid.dlat) + 1)
-# Grid.num_long = int(np.ceil(np.abs(Grid.max_long - Grid.min_long)/Grid.dlong) + 1)
+Grid.num_lat = int(np.ceil(np.abs(Grid.max_lat - Grid.min_lat)/Grid.dlat) + 1)
+Grid.num_long = int(np.ceil(np.abs(Grid.max_long - Grid.min_long)/Grid.dlong) + 1)
 
 # use None for no post-processing weathering -- weathering can be post-processed by the TAP
 # viewer for instantaneous releases (see OilWeathering.py)

@@ -39,8 +39,6 @@ def build_cubes(config_file):
     FullCubesPath.mkdir(parents=True, exist_ok=True)
     # Build list of Trajectory dirs and cube names:
     CubesList = []
-    print(config.Seasons)
-    print(config.CubesRootNames)
     for ( (Season, Months), CubeRootName ) in zip(config.Seasons, config.CubesRootNames):
         # build the directory structure
         print("setting up dirs for:")
@@ -71,7 +69,7 @@ def build_cubes(config_file):
                 # TrajName = os.path.join(RootDir,TrajectoriesPath,Season,d)
                 # CubeName = os.path.join(RootDir, CubesPath, Season, "%s%s%s"%(CubeRootName, d[4:7].zfill(4),".bin") )
                 TrajName = d
-                CubeName = FullCubesPath / Season / ("%s%s%s"%(str(CubeRootName), str(d)[-3:].zfill(4),".bin"))
+                CubeName = FullCubesPath / Season / f"{str(CubeRootName)}{d.name[-3:].zfill(4)}.bin"
                 CubesList.append((TrajName, CubeName, Months))
         print(len(CubesList))
     
