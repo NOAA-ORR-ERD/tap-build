@@ -1,10 +1,28 @@
 
 from datetime import datetime
+import sys
 import os
-from importlib.machinery import SourceFileLoader
+import importlib
 from types import SimpleNamespace
 import yaml
 
+
+def import_from_path(module_name, file_path):
+    """
+    SourceFileLoader.load_module() is deprecated
+
+    This is from a recipe in the docs.
+
+    :param module_name: name the resulting module should have (internal __name__)
+
+    :file_path: PathLike to the python file to load
+    """
+    file_path = os.fspath(file_path)
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
 
 def load_config(config_file):
     """
@@ -13,11 +31,13 @@ def load_config(config_file):
     returns: an object with a namespace with configuration info
 
     Currently it can only load a python file, but could be extended in the future to load yaml, or ...
+
+    NOTE: this could use `runpy.run_path()` and always get a dict.
     """
     config_file = os.fspath(config_file)
 
     if config_file[-3:] == ".py":
-        config = SourceFileLoader("config", os.fspath(config_file)).load_module()
+        config = import_from_path("config", config_file)
     elif config_file[-5:] == ".yaml":
         with open(config_file, encoding='utf-8') as infile:
             data = yaml.load(infile, Loader=yaml.Loader)
