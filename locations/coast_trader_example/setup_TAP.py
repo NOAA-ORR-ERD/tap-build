@@ -52,17 +52,16 @@ setup_file = input_dir/"config.yaml"
 current_key = "ocean_currents"
 wind_key = "winds"
 
-# If True: Model is initialized (What constitutes "initialize"?)
-# If False, it will be initialized once, and only variable
-# parameters are changed for each run
-re_initialize_model = True
+# If True: Model will be initialized (What constitutes "initialize"?)
+# If False, initialized files are loaded 
+initialize_model = True
 
 # RDM's interpretation of what initialization means
-if re_initialize_model:
+if initialize_model:
+    # Create time-map files 
     reload_file_map = False
 else:
-    # Boolean flag for reload (True) or create (False) 
-    # time-map files
+    # Reload filemap that was already created
     reload_file_map = True
 
 ###############################################################
@@ -83,116 +82,165 @@ OutputDir.mkdir(parents=True, exist_ok=True)
 # if not os.path.isdir(OutputDir):
 #     os.mkdir(OutputDir)
 
-#~~~~~~~~~~~~~~ RDM: I am here ~~~~~~~~~~~~~~~~~~
-# Location of Gnome data forcing
-# Data_DirC = "/data/dylan/SoCalTAP/Data/gnome_ucla/surface/"     # Gonzo
-# Data_DirW = "/data/dylan/SoCalTAP/Data/gnome_ucla/wind/"
+###################################
+###### **** FILES **** ######
+###################################
+# ~~~~~~~ NETCDF input files ~~~~
+# dictionaries with paths to useable files and start times of files
+# with identical key names to those in "directories"
+file_paths={}
+file_times={}
 
-DataDir = RootDir / "data"
+directories = {
+    current_key : Path(setup['directories']['input_currents']),
+    wind_key : Path(setup['directories']['input_winds'])
+}
 
-if not DataDir.is_dir:
-    raise ValueError(f"DataDir: {DataDir} Doesn't exist")
+# pass back:
+#  1) a list of .csv files with dates and paths for files in a given directory (e.g. for winds and currents)
+#  2) a list of .csv files with dates and paths for files that are curropt or missing
+# List lenth is same as directories dictionary length (in this case, 2)
+# If the .csv files were created then their paths are passed back
+# If "reload_file_map = False" then the .csv files are first created and then passed back
+good_files_path, bad_files_path = xarray_file_map(  
+    directories, 
+    reload_file_map
+)
 
+# Loop through .csv files in "good_file_path".  
+# Dictionary keys are same as "directory" keys if .csv's were created 
+# through this script, but I assign "key_name" from the file name in case 
+# the files are created separately.  Headers for .csv files need to be
+# "file_path" and "start_datetime"
+# This creates a dictionary for file paths and a dictionary for file_times,
+# both with same indexing. 
+for path in good_files_path:
+    print(f"Loading: {path}")
+    try: 
+        df = pd.read_csv(path)
+        key_name = "_".join(
+            [str(item) 
+             for item in str(path).split("/")[-1].split("_")[0:-1]
+            ]
+        )
+        print(key_name)
+        file_paths[key_name] = df['file_path']
+        file_times[key_name] = df['start_datetime']
+    except OSError:
+       raise RuntimeError('File not found') from None
+
+# ~~~ The next four lines of code seem unnecessary and worth getting rid of ~~~
+# lists of file paths to current or wind forcing files
+current_files = file_paths[current_key]
+wind_files = file_paths[wind_key]
+# list of start times for above files
+current_time_map = file_times[current_key]
+wind_time_map =  file_times[wind_key]
+
+# ~~~~~~~~~~~ MAP ~~~~~~~~~~
+# Inputs needed for PyGnome
+MapFileName = setup['files']['map']
+MapFileType = MapFileName[-3:]
+
+# ~~~~~~~~~~~ OIL ~~~~~~~~~~
+oil_file = setup['files']['oil']
+
+# ~~~~~~~~~~~ GRID ~~~~~~~~~~
+# needed for NEMO current files
+grid_file = setup['files']['grid_file']
 
 ###################################
-###### **** User Inputs **** ######
+###### **** PARAMETERS **** ######
 ###################################
 
-# Spill information
-# each start site has coords, name, and any other info needed by the GNOME run
-StartSites = [{'start_position':(-117.211873, 32.682502),
-               'name': 'Ellen',
-               'oil_file': 'AD01438.json',
-               'spill_amount': (1000, 'bbl'),
-               },
-              {'start_position':(-117.226992, 32.676416),
-               'name': 'Elly',
-               'oil_file': 'AD01438.json',
-               'spill_amount': (1000, 'bbl'),
-               },
-              ]
+# ~~~~~~ SPILL INFORMATION ~~~~~
+SpillAmount = setup['params']['spill_amount'] 
+NumLEs = setup['params']['number_elements'] 
+ReleaseLength = setup['params']['spill_duration'] 
+refloat = setup['params']['refloat']
+model_timestep = setup['params']['timestep']
 
-# Refactor: move this kind of info into the PyGNOME config?
+# ~~~~~~ WEATHERING ~~~~~
+VariableMass = setup['params']['variable_mass'] 
+density = setup['params']['density']
 
-# OilType = None
-VariableMass = True  # True if you want GNOME runs with weathering
-                     # (must have ADIOS oil json files available )
+# ~~~~~~ HYDROGRAPHY ~~~~~
+waterTemp = setup['params']['water_temp']
+waterSal = setup['params']['water_salinity']
 
-# waterTemp = 290
-# waterSal = 33
-# # SpillAmount = [1, 'kg']
+# ~~~~~~ WINDS AND MOVERS ~~~~~
+windage_range = setup['params']['windage_range']
+windage_persist = setup['params']['windage_persist']
+diffusion_coef = setup['params']['diffusion_coef'] 
 
-SpillAmount = (1000, 'bbl')
+# ~~~~~~ SPILL SPECIFICATIONS ~~~~~
+StartSites = setup['params']['spill_sites']
+
+# !!!!!! Change the StartSites to a dictionary, as shown below !!!!!!
+# !!!!!! Add "NumLEs" so num particles can vary with spill_amount !!!!!!
+# # Spill information
+# # each start site has coords, name, and any other info needed by the GNOME run
+# StartSites = [{'start_position':(-117.211873, 32.682502),
+#                'name': 'Ellen',
+#                'oil_file': 'AD01438.json',
+#                'spill_amount': (1000, 'bbl'),
+#                },
+#               {'start_position':(-117.226992, 32.676416),
+#                'name': 'Elly',
+#                'oil_file': 'AD01438.json',
+#                'spill_amount': (1000, 'bbl'),
+#                },
+#               ]
 
 
-NumLEs = 1000 # number of Lagrangian elements you want in the GNOME run
+# ~~~~~~ TAP SELECTIONS ~~~~~
+NumStarts = int(setup['tap']['num_spills']) 
+days = setup['tap']['cube_days']
+Seasons = setup['tap']['seasons']
+StartTimeFiles = [(os.path.join(RootDir, s[0]+'Starts.txt'), s[0]) for s in Seasons]
 
-ReleaseLength = 12 # Length of release in hours (0 for instantaneous)
-
-# time span of your data set
-# DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2004, 2, 26, 23))
-DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2013, 12, 31, 23))
-# still needed??
-DataGaps = []
-
-# specification for how you want seasons to be defined, as a list of lists:
-#  [name, (months) ]
-#    name is a string for the season name  
-#    months is a tuple of integers indicating which months are in that season
-Seasons = [
-           ['Summer', [6,7,8,9,10,11]],
-           ['Winter', [12,1,2,3,4,5]]
-           ]
+# !!!!  convert seasons into a dictionary !!!!
 # Seasons = [
-#            ['Spring',  [3, 4, 5 ]],
-#            ['Summer',  [6, 7, 8 ]],
-#            ['Fall',  [9, 10, 11]],
-#          ]
-# Seasons = [
-#             ['Dec', [12]],
-#             ['Jan', [1]],
-#             ['Feb', [2]],
-#             ['Mar', [3]],
-#             ['Apr', [4]],
-#             ['May', [5]],
-#           ]
+#            ['Summer', [6,7,8,9,10,11]],
+#            ['Winter', [12,1,2,3,4,5]]
+#            ]
 
-NumStarts = 10 # number of start times you want in each season:
+# ~~~~~~ CODE SELECTION ~~~~~
+# true/false statements to turn on/off different code functions
+BuildStartTimes = setup['tap_build']['BuildStartTimes']
+RunPyGnome = setup['tap_build']['RunPyGnome']
+BuildCubes = setup['tap_build']['BuildCubes']
+BuildSite = setup['tap_build']['BuildSite']
+#BuildViewer = setup['tap_build']['BuildViewer']
 
-
-# this is used to then compute the "real" variables:
-output_times_in_days = [1, 2, 3, 5, 7]
-
+#~~~~~~~~~ Consider removing  ~~~~~~~~~~~~`
+# viewer for instantaneous releases (see OilWeathering.py)
+OilWeatheringType = None
 
 ##############################################################
 ###### Additional Calculations (and less common inputs) ######
 ##############################################################
-Project = "Example"
+Project = os.path.basename(OutputDir)
 
-StartTimeFiles = [(os.path.join(RootDir, s[0]+'Starts.txt'), s[0]) for s in Seasons]
-
-output_times_in_days = [1, 2, 3, 5, 7] # temp for use to compute the below
-OutputTimes = [24*i for i in output_times_in_days] # output times in hours (calculated from days)
-OutputUserStrings = ['%d output_times_in_days'%i for i in output_times_in_days]
-del output_times_in_days # not really required to delete, but safer
-
-OutputTimestep = 12 #hours
-TrajectoryRunLength = max(OutputTimes)
-TrajectoriesPath = RootDir / 'TrajectoriesOut'
-MapName = Project + ' TAP'
+OutputTimes = [24*i for i in days] # output times in hours 
+OutputUserStrings = ['%d days'%i for i in days]
+# hours between writing output to file
+OutputTimestep = setup['params']['OutputTimestep'] 
+TrajectoryDuration = setup['params']['TrajectoryDuration']
+TrajectoriesPath = 'TrajectoriesOut'  # relative to RootDir
+MapName = Project + 'Coast Trader TAP'
 CubesPath = 'Cubes'
-CubesRootNames = [f'EXAMPLE_{i[1]}' for i in StartTimeFiles] # built to match the start time files
 
 # Can be used to filter out some start sites and start times
 # These variables function as an index map
-s0,s1 = [0, len(StartSites)]
+s0,s1 = [0,len(StartSites)]
 RunSites = range(s0,s1)
 
 r0,r1 = [0,NumStarts]
 RunStarts = range(r0,r1)
 
 ## Cube Builder Data
-ReceptorType = 'Grid' # should be either "Grid" or "Polygons" (only grid is supported at the moment)
+ReceptorType = 'Grid' 
 CubeType = 'Volume' # should be either "Volume" or "Cumulative"
 ## CubeDataType options are: 'float32', 'uint16', or 'uint8'
 ##   float32 gives better precision for lots of LEs
@@ -200,65 +248,30 @@ CubeType = 'Volume' # should be either "Volume" or "Cumulative"
 ##   uint16 is a mid-point -- probably good to 10,000 LEs or so
 CubeDataType = 'float32'
 
-# Files with time series records in them used by GNOME
-# These are used to compute the possible time files. The format is:
-# It is a list of one or more time files. each file is desribed with a tuple:
-#  (file name, allowed_gap_length, type)
-#    file_name is a string
-#    allowed_gap_length is in hours. It indicates how long a gap in the time
-#         series records you will allow GNOME to interpolate over.
-#    type is a string describing the type of the time series file. Options
-#         are: "Wind", "Hyd" for Wind or hydrology type files
-# if set to None, model start and end times will be used
-#TimeSeries = [("WindData.OSM", datetime.timedelta(hours = 6), "Wind" ),]
-TimeSeries = None
+Grid = BuildGrid(
+    setup['tap']['min_lat'], 
+    setup['tap']['max_lat'], 
+    setup['tap']['min_lon'], 
+    setup['tap']['max_lon'],
+    setup['tap']['d_lat'],
+    setup['tap']['d_lon']
+)
 
-#If ReceptorType is Grid, you need these, it defines the GRID
-class Grid:
-	pass
-Grid.min_lat = 32.0 # decimal degrees
-Grid.max_lat = 35.5
-Grid.dlat = 0.02       #  makes 2.23km tall receptor cells at 33N
-Grid.min_long = 238.5
-Grid.max_long = 243.74
-Grid.dlong = 0.025       # 2.33km at 30N, 2.25km at 36N
+# The following two are for TAP viewer 
+PresetLOCS = setup['site']['levels_of_concern']
+PresetSpillAmounts = setup['site']['spill_volumes'] # adjustable spill amounts in TAP viewer
 
-Grid.num_lat = int(np.ceil(np.abs(Grid.max_lat - Grid.min_lat)/Grid.dlat) + 1)
-Grid.num_long = int(np.ceil(np.abs(Grid.max_long - Grid.min_long)/Grid.dlong) + 1)
-
-# use None for no post-processing weathering -- weathering can be post-processed by the TAP
-# viewer for instantaneous releases (see OilWeathering.py)
-OilWeatheringType = None
-PresetLOCS = ['5 barrels', '10 barrels', '20 barrels']
-PresetSpillAmounts = ['1000 barrels', '100 barrels']
+## TAP Viewer Data (for SITE.TXT file), where the TAP view, etc lives.
+TAPViewerSource = os.path.join(os.path.dirname(RootDir),'TapFiles') 
+## setup for the Viewer"
+TAPViewerPath = Project + "_TapView" 
 
 
-# Inputs needed for PyGnome -- this is probably going elsewhere
-# MapFileName, MapFileType = (os.path.join(RootDir,'SoCalcoast_pos.bna'), 'BNA')
+##############################################################
+###### Additional Calculations (and less common inputs) ######
+##############################################################
+#Project = "Example"
 
-# current_files = []
-# for ftmp in  os.listdir(Data_DirC):
-#     if ftmp[-3:] == '.nc':
-#         current_files.append(os.path.join(Data_DirC, ftmp))
-
-# wind_files = []
-# for ftmp in  os.listdir(Data_DirW):
-#     if ftmp[-3:] == '.nc':
-#         wind_files.append(os.path.join(Data_DirW, ftmp))
+#StartTimeFiles = [(os.path.join(RootDir, s[0]+'Starts.txt'), s[0]) for s in Seasons]
 
 
-# current_files = [
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2000_Pacific.nc"),
-#                  os.path.join(Data_Dir,"HYCOM_3hrly_2Depth_2001_Pacific.nc"),
-#                 ]
-
-# wind_files = [
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2000_Pacific.nc"),
-#               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2001_Pacific.nc"),
-#              ]
-
-# refloat = -1
-# windage_range = (0.02,0.04)
-# windage_persist = 900
-# diffusion_coef = 10000  # 1.e4
-# model_timestep = 15*60 # timestep in seconds
