@@ -1,33 +1,89 @@
 """
-And example master set up script for a TAP run
+An adaptation of Chris' setup script to incorporate Coast Trader changes
 
-All the data required to set up and build TAP cubes + site.json file should be in here
+Purpose: Uses `yaml` file inputs to setup TAP, run PyGNOME, and build TAP cubes
+
+Requirements:
+ - gnome_tap (or similar) environment
+ - `ulimit` set to 10000 files.  Before running script, type into command line;
+    % ulimit -n 10000 
+ - yaml file created by `create_TAP_setup.ipynb` or setup equivalently
+ 
+Environment: `gnome_tap`
+    $ cd full_path_to/tapbuild/tapbuild
+    $ conda env create -n gnome_tap --file requirements_tap.yaml
+    $ conda activate gnome_tap
 
 NOTE: it relies on a run_pygnome script that needs to be developed
 
 """
 
 import os
-from datetime import datetime
+import sys
+import yaml
+from datetime import datetime, timedelta
+import calendar
+import time # to track computation speed for this setup file
 from pathlib import Path
 import numpy as np
+import pandas as pd
+from glob import glob
+import math # for build_grid class
 
-# whether the model should be re-initialized each time its run.
-# if False, it will be initialized once, and only variable
+
+from tapbuild.utilities import BuildGrid, WriteStartTimes, file_map
+
+# start timer of computation speed
+start_time = time.time()
+
+###############################################################
+# ****  NECCESSARY INPUTS IF THIS WERE A FUNCTION  **** ######
+###############################################################
+
+# setup yaml file
+input_dir = Path(
+    "/Users/tap.fn/Fury4/tap.fn/rachael/coast_trader/DFO_NOAA_90"
+    #"/Users/rachael.mueller/Projects/SpillScenarioFiles/2024/CoastTrader/TAP"
+)
+setup_file = input_dir/"config.yaml"
+# setup_file = 'make_gnome_model.py' # originally called "pygnome_script" but never used in this file
+
+# desired naming convention for currents and winds
+current_key = "ocean_currents"
+wind_key = "winds"
+
+# If True: Model is initialized (What constitutes "initialize"?)
+# If False, it will be initialized once, and only variable
 # parameters are changed for each run
 re_initialize_model = True
 
-pygnome_script = 'make_gnome_model.py'
+# RDM's interpretation of what initialization means
+if re_initialize_model:
+    reload_file_map = False
+else:
+    # Boolean flag for reload (True) or create (False) 
+    # time-map files
+    reload_file_map = True
 
-# Location to read and write files for this TAP application
-# this example is relative to the location of this setup script
-#  -- but you can hard-code anything.
-RootDir = Path(__file__).parent
+###############################################################
+# Load .yaml and define variables
+###############################################################
 
+# load setup yaml file
+with open(setup_file) as file:
+    setup = yaml.load(file, Loader=yaml.Loader)
+
+# Location to read and write files for this TAP application   
+RootDir = Path(setup['directories']['root'])
+OutputDir = Path(setup['directories']['outputs'])
+# make directories if needed
 RootDir.mkdir(parents=True, exist_ok=True)
+OutputDir.mkdir(parents=True, exist_ok=True)
+# # make output directory if it doesn't exist
+# if not os.path.isdir(OutputDir):
+#     os.mkdir(OutputDir)
 
-pygnome_script = RootDir / "make_gnome_model.py"
-    
+#~~~~~~~~~~~~~~ RDM: I am here ~~~~~~~~~~~~~~~~~~
 # Location of Gnome data forcing
 # Data_DirC = "/data/dylan/SoCalTAP/Data/gnome_ucla/surface/"     # Gonzo
 # Data_DirW = "/data/dylan/SoCalTAP/Data/gnome_ucla/wind/"
