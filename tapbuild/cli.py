@@ -28,10 +28,10 @@ def main():
         sys.exit()
 
     try:
-        cmd = commands[command]
+        tapbuild_function = commands[command]
     except KeyError:
         print(f"You must provide a valid command. You passed: {command}\n"
               f"Options are: {[*commands]}")
         sys.exit(1)
 
-    cmd(config_file)
+    tapbuild_function(config_file)
