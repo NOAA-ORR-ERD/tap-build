@@ -58,6 +58,7 @@ dependencies:
 ## Base numerical libs
 - numpy
 - scipy
+- xarray
 
 ## Modeling libs
 - gsw

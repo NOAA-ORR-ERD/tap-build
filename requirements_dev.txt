@@ -1,4 +1,5 @@
 numpy
+xarray
 watchdog
 flake8
 tox
