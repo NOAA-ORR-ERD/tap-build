@@ -37,12 +37,11 @@ name: gnome_tap
 
 channels:
 - conda-forge
-- defaults
- 
 
 dependencies:
-- python=3.11.*
+- python=3.12
 - pip
+- jupyter 
 
 ## System libs
 - colander <2
@@ -59,9 +58,13 @@ dependencies:
 - numpy
 - scipy
 
+# File I/O
+- xarray
+- netCDF4
+- pyyaml # post_gnome
+
 ## Modeling libs
 - gsw
-- netCDF4
 - trimesh
  
 ## Spatial Libs
@@ -73,20 +76,19 @@ dependencies:
 - shapely
 
 # NOAA maintained packages
-- gridded>=0.6.5
-- pynucos=3.2.*
+- gridded
+- pynucos
 - cell_tree2d
-- py_gd>=2.2
-- adios_db>=1.1
+- py_gd
+- adios_db
 
 # Required to build PyGNOME and TAP_build
 # NOTE: you also need a compiler set up to build Python extensions
-- cython=3.*
-- setuptools>=62  # older versions uses different build dirs
+- cython
+- setuptools  # older versions uses different build dirs
 - gitpython
 
 ## TAP libs
-- pip
 - bumpversion
 - wheel
 - watchdog
@@ -94,11 +96,12 @@ dependencies:
 - tox
 - coverage
 - Sphinx
-- matplotlib # post_gnome
 - pyshp # post_gnome
 - pytest # post_gnome
-- pyyaml # post_gnome
+
+## Graphics
 - cartopy # post_gnome
+- matplotlib # post_gnome
 
 - pip:
    - "tapbuild@git+ssh://git@gitlab.orr.noaa.gov:9933/gnome/tap/tapbuild.git"
