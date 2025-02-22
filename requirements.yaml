@@ -6,21 +6,22 @@
 #  (excluding _build, _test, _docs packages) and includes 
 #  packages for post_gnome as well
 #
-# create an environmemnt:
-#   conda env create -n gnome_tap --file requirements_tap.yaml
+# USE:
+#   conda env create -n gnome_tap --file requirements.yaml
 #
-# Install pygnome in this environment
+# After, install pygnome in this environment
 #   $ conda activate gnome_tap
 #   $ cd ../pygnome/py_gnome
 #   $ git checkout develop 
-#   $ python setup.py cleanall # remove this step if pip installing within yaml
-#   $ python setup.py develop
+#   $ python -m pip install ./
+# OR (for editable version)
+#   $ pip install --no-build-isolation -e ./ 
 #  
-# NOTE: This file requires the user to have a SSH key in GitLab, e.g. see:
-#  https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+# NOTE: This file requires the user to have a git token and 
+#       will prompt user for the password during install
 #
-# Without an SSH key, comment out the `-pip:` section and, 
-# within the gnome_tap environment, clone and install 
+# To avoid need for Git token, comment out `-pip:` section 
+# and, within the gnome_tap environment, clone and install 
 # (1) tap-build and (2) post-gnome to their own directories:
 #   $ git clone ssh://git@gitlab.orr.noaa.gov:9933/gnome/tap/tapbuild.git
 #   $ cd tapbuild
@@ -40,8 +41,8 @@ channels:
 
 dependencies:
 - python=3.12
-- pip
-- jupyter 
+- scikit-build-core
+- cmake=3.15
 
 ## System libs
 - colander <2
@@ -99,15 +100,16 @@ dependencies:
 - pyshp # post_gnome
 - pytest # post_gnome
 
-## Graphics
+## Graphics/development
 - cartopy # post_gnome
 - matplotlib # post_gnome
+- Jupyter 
 
+## Package installs
+- pip
 - pip:
-   - "tapbuild@git+ssh://git@gitlab.orr.noaa.gov:9933/gnome/tap/tapbuild.git"
-   - "post_gnome@git+ssh://git@gitlab.orr.noaa.gov:9933/gnome/post_gnome.git"
-
-
-
-
+   - -e git+https://${USER}@gitlab.orr.noaa.gov/gnome/tap/tapbuild.git#egg=tapbuild
+   - git+https://${USER}@gitlab.orr.noaa.gov/gnome/post_gnome.git
+# pygnome install can't be done in this way because of "_" in `py_gnome` subdirectory. 
+#   - git+https://${USER}@gitlab.orr.noaa.gov/gnome/pygnome.git#egg=py_gnome&subdirectory=py_gnome
 
