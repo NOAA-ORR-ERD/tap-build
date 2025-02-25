@@ -110,6 +110,5 @@ dependencies:
 - pip:
    - -e git+https://${USER}@gitlab.orr.noaa.gov/gnome/tap/tapbuild.git#egg=tapbuild
    - git+https://${USER}@gitlab.orr.noaa.gov/gnome/post_gnome.git
-# pygnome install can't be done in this way because of "_" in `py_gnome` subdirectory. 
-#   - git+https://${USER}@gitlab.orr.noaa.gov/gnome/pygnome.git#egg=py_gnome&subdirectory=py_gnome
+   - -e git+https://${USER}@gitlab.orr.noaa.gov/gnome/pygnome.git#egg=gnome&subdirectory=py_gnome
 
