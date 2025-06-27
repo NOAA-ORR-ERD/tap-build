@@ -61,7 +61,7 @@ def run_gnome(config_file):
                 start_site['output_timestep'] = timedelta(hours=config.OutputTimestep)
 
 
-                model = model_runner.initialize_model(config) if model is None else model
+                model = model_runner.initialize_model(config) if model is None  or config.re_initialize_model else model
 
                 # build the NetCDF outputter
                 model = model_runner.setup_for_run(model, config, start_site)
