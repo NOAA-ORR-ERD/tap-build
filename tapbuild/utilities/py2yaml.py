@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Convert a Python file into a yaml file.
 
@@ -42,9 +43,8 @@ def is_dumpable(name, obj):
 
 DATA = {name: obj for name, obj in vars(config).items() if is_dumpable(name, obj)}
 
-for key, obj in DATA.items():
-    print(key, type(obj))
-
+# for key, obj in DATA.items():
+#     print(key, type(obj))
 
 yaml.dump(DATA, open(outfile, 'w'))
 

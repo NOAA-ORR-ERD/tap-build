@@ -16,6 +16,7 @@ Grid:
   min_long: 238.5
   num_lat: 176
   num_long: 211
+MapFileName: SanDiegoMap.bna
 MapName: Example TAP
 NumLEs: 1000
 NumStarts: 10

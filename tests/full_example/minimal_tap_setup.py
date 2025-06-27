@@ -23,6 +23,9 @@ RootDir = Path(__file__).parent
 RootDir.mkdir(parents=True, exist_ok=True)
 
 pygnome_script = RootDir / "make_gnome_model.py"
+
+MapFileName = "SanDiegoMap.bna"
+
     
 DataDir = RootDir / "data"
 
@@ -65,13 +68,12 @@ Seasons = [
 
 NumStarts = 2 # number of start times you want in each season:
 
-
 ##############################################################
 ###### Additional Calculations (and less common inputs) ######
 ##############################################################
 Project = "Test Example"
 
-StartTimeFiles = [(os.path.join(RootDir, s[0]+'Starts.txt'), s[0]) for s in Seasons]
+StartTimeFiles = [(os.path.join(RootDir, s[0] + 'Starts.txt'), s[0]) for s in Seasons]
 
 OutputTimes = [3, 6, 12, 24] # output times in hours
 OutputUserStrings = [f"{i} hours" for i in OutputTimes]
@@ -98,17 +100,23 @@ CubeDataType = 'float32'
 TimeSeries = None
 
 # If ReceptorType is Grid, you need these, it defines the GRID
-class Grid:
-	pass
-Grid.min_lat = 32.0 # decimal degrees
-Grid.max_lat = 35.5
-Grid.dlat = 0.02       #  makes 2.23km tall receptor cells at 33N
-Grid.min_long = 238.5
-Grid.max_long = 243.74
-Grid.dlong = 0.025       # 2.33km at 30N, 2.25km at 36N
+# used to compute num_lat and num_lon
+# that code should be in the class, really.
 
-Grid.num_lat = int(np.ceil(np.abs(Grid.max_lat - Grid.min_lat)/Grid.dlat) + 1)
-Grid.num_long = int(np.ceil(np.abs(Grid.max_long - Grid.min_long)/Grid.dlong) + 1)
+dlat = 0.02  #  makes 2.23km tall receptor cells at 33N
+dlong = 0.025  # 2.33km at 30N, 2.25km at 36N
+
+Grid = {"min_lat": 32.0,  # decimal degrees
+        "max_lat": 35.5,
+        "min_long": 238.5,
+        "max_long": 243.74,
+        }
+Grid['num_lat'] = (int(np.ceil(np.abs(Grid['max_lat'] - Grid['min_lat']) / dlat) + 1))
+Grid['num_long'] = (int(np.ceil(np.abs(Grid['max_long'] - Grid['min_long']) / dlong) + 1))
+
+# not really necessary, but to keep things clean
+del dlat
+del dlong
 
 # use None for no post-processing weathering -- weathering can be post-processed by the TAP
 # viewer for instantaneous releases (see OilWeathering.py)

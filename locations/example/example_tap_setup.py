@@ -20,6 +20,8 @@ re_initialize_model = True
 # name is the script that has you custom PyGNOME code in it
 pygnome_script = 'make_gnome_model.py'
 
+MapFileName = "SanDiegoMap.bna"
+
 # Location to read and write files for this TAP application
 # this example is relative to the location of this setup script
 #  -- but you can hard-code anything.
@@ -150,17 +152,6 @@ CubeDataType = 'float32'
 TimeSeries = None
 
 # If ReceptorType is Grid, you need these, it defines the GRID
-
-# class Grid:
-# 	pass
-# Grid.min_lat = 32.0 # decimal degrees
-# Grid.max_lat = 35.5
-# Grid.dlat = 0.02       #  makes 2.23km tall receptor cells at 33N
-# Grid.min_long = 238.5
-# Grid.max_long = 243.74
-# Grid.dlong = 0.025       # 2.33km at 30N, 2.25km at 36N
-# Grid.num_lat = int(np.ceil(np.abs(Grid.max_lat - Grid.min_lat)/Grid.dlat) + 1)
-# Grid.num_long = int(np.ceil(np.abs(Grid.max_long - Grid.min_long)/Grid.dlong) + 1)
 
 dlat = 0.02  #  makes 2.23km tall receptor cells at 33N
 dlong = 0.025  # 2.33km at 30N, 2.25km at 36N

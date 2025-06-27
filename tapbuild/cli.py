@@ -1,12 +1,16 @@
 import sys
 
-from . import build_start_times, run_gnome, build_cubes
+from . import (build_start_times,
+               run_gnome,
+               build_cubes,
+               build_site)
 
 # The keys in this dictionary are the names used in command line execution
 # of code, e.g. `$ tapbuild start_times`
 commands = {"start_times": build_start_times.build_start_times,
             "run_gnome": run_gnome.run_gnome,
             "build_cubes": build_cubes.build_cubes,
+            "build_site": build_site.build_site,
             }
 
 HELP = ("tapbuild CMD CONFIG_file\n\n"
