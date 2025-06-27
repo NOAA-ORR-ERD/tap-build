@@ -17,15 +17,15 @@ import numpy as np
 # parameters are changed for each run
 re_initialize_model = True
 
+# name is the script that has you custom PyGNOME code in it
 pygnome_script = 'make_gnome_model.py'
 
 # Location to read and write files for this TAP application
 # this example is relative to the location of this setup script
 #  -- but you can hard-code anything.
+
 RootDir = Path(__file__).parent
-
 RootDir.mkdir(parents=True, exist_ok=True)
-
 pygnome_script = RootDir / "make_gnome_model.py"
     
 # Location of Gnome data forcing
@@ -37,37 +37,29 @@ DataDir = RootDir / "data"
 if not DataDir.is_dir:
     raise ValueError(f"DataDir: {DataDir} Doesn't exist")
 
-
 ###################################
 ###### **** User Inputs **** ######
 ###################################
 
 # Spill information
-# each start site has coords, name, and any other info needed by the GNOME run
-StartSites = [{'start_position':(-117.211873, 32.682502),
+# each start site has start_position, name, and any other info needed by the GNOME run
+# the stuff defined here will be available to the PyGNOME script
+StartSites = [{'start_position':[-117.211873, 32.682502],
                'name': 'Ellen',
                'oil_file': 'AD01438.json',
-               'spill_amount': (1000, 'bbl'),
+               'spill_amount': [1000, 'bbl'],
                },
-              {'start_position':(-117.226992, 32.676416),
+              {'start_position':[-117.226992, 32.676416],
                'name': 'Elly',
                'oil_file': 'AD01438.json',
-               'spill_amount': (1000, 'bbl'),
+               'spill_amount': [1000, 'bbl'],
                },
               ]
 
-# Refactor: move this kind of info into the PyGNOME config?
-
-# OilType = None
 VariableMass = True  # True if you want GNOME runs with weathering
                      # (must have ADIOS oil json files available )
 
-# waterTemp = 290
-# waterSal = 33
-# # SpillAmount = [1, 'kg']
-
-SpillAmount = (1000, 'bbl')
-
+SpillAmount = [1000, 'bbl']
 
 NumLEs = 1000 # number of Lagrangian elements you want in the GNOME run
 
@@ -75,8 +67,10 @@ ReleaseLength = 12 # Length of release in hours (0 for instantaneous)
 
 # time span of your data set
 # DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2004, 2, 26, 23))
-DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2013, 12, 31, 23))
-# still needed??
+DataStartEnd = [datetime(2004, 1, 1, 1), datetime(2013, 12, 31, 23)]
+
+# Needed if there are gaps in the data ...
+# though maybe not yet implimented?
 DataGaps = []
 
 # specification for how you want seasons to be defined, as a list of lists:
@@ -101,19 +95,17 @@ Seasons = [
 #             ['May', [5]],
 #           ]
 
-NumStarts = 10 # number of start times you want in each season:
-
+NumStarts = 10 # number of start times you want in each season
 
 # this is used to then compute the "real" variables:
 output_times_in_days = [1, 2, 3, 5, 7]
-
 
 ##############################################################
 ###### Additional Calculations (and less common inputs) ######
 ##############################################################
 Project = "Example"
 
-StartTimeFiles = [(os.path.join(RootDir, s[0]+'Starts.txt'), s[0]) for s in Seasons]
+StartTimeFiles = [[os.path.join(RootDir, s[0]+'Starts.txt'), s[0]] for s in Seasons]
 
 output_times_in_days = [1, 2, 3, 5, 7] # temp for use to compute the below
 OutputTimes = [24*i for i in output_times_in_days] # output times in hours (calculated from days)
@@ -130,10 +122,10 @@ CubesRootNames = [f'EXAMPLE_{i[1]}' for i in StartTimeFiles] # built to match th
 # Can be used to filter out some start sites and start times
 # These variables function as an index map
 s0,s1 = [0, len(StartSites)]
-RunSites = range(s0,s1)
+RunSites = list(range(s0,s1))
 
 r0,r1 = [0,NumStarts]
-RunStarts = range(r0,r1)
+RunStarts = list(range(r0,r1))
 
 ## Cube Builder Data
 ReceptorType = 'Grid' # should be either "Grid" or "Polygons" (only grid is supported at the moment)
@@ -157,18 +149,33 @@ CubeDataType = 'float32'
 #TimeSeries = [("WindData.OSM", datetime.timedelta(hours = 6), "Wind" ),]
 TimeSeries = None
 
-#If ReceptorType is Grid, you need these, it defines the GRID
-class Grid:
-	pass
-Grid.min_lat = 32.0 # decimal degrees
-Grid.max_lat = 35.5
-Grid.dlat = 0.02       #  makes 2.23km tall receptor cells at 33N
-Grid.min_long = 238.5
-Grid.max_long = 243.74
-Grid.dlong = 0.025       # 2.33km at 30N, 2.25km at 36N
+# If ReceptorType is Grid, you need these, it defines the GRID
 
-Grid.num_lat = int(np.ceil(np.abs(Grid.max_lat - Grid.min_lat)/Grid.dlat) + 1)
-Grid.num_long = int(np.ceil(np.abs(Grid.max_long - Grid.min_long)/Grid.dlong) + 1)
+# class Grid:
+# 	pass
+# Grid.min_lat = 32.0 # decimal degrees
+# Grid.max_lat = 35.5
+# Grid.dlat = 0.02       #  makes 2.23km tall receptor cells at 33N
+# Grid.min_long = 238.5
+# Grid.max_long = 243.74
+# Grid.dlong = 0.025       # 2.33km at 30N, 2.25km at 36N
+# Grid.num_lat = int(np.ceil(np.abs(Grid.max_lat - Grid.min_lat)/Grid.dlat) + 1)
+# Grid.num_long = int(np.ceil(np.abs(Grid.max_long - Grid.min_long)/Grid.dlong) + 1)
+
+dlat = 0.02  #  makes 2.23km tall receptor cells at 33N
+dlong = 0.025  # 2.33km at 30N, 2.25km at 36N
+
+Grid = {"min_lat": 32.0,  # decimal degrees
+        "max_lat": 35.5,
+        "min_long": 238.5,
+        "max_long": 243.74,
+        }
+Grid['num_lat'] = (int(np.ceil(np.abs(Grid['max_lat'] - Grid['min_lat']) / dlat) + 1))
+Grid['num_long'] = (int(np.ceil(np.abs(Grid['max_long'] - Grid['min_long']) / dlong) + 1))
+
+# not really neccesary, but to keep things clean
+del dlat
+del dlong
 
 # use None for no post-processing weathering -- weathering can be post-processed by the TAP
 # viewer for instantaneous releases (see OilWeathering.py)

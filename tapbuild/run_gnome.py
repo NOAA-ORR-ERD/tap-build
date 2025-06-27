@@ -9,6 +9,7 @@ Parameters for that model are
 import sys
 import os
 from datetime import datetime, timedelta
+from pathlib import Path
 from .utilities import load_config, read_start_times_file
 
 import gc  # garbage collector
@@ -23,6 +24,10 @@ def run_gnome(config_file):
 
     print("loading: ", config_file)
     config = load_config(config_file)
+
+    # convert paths:
+    config.RootDir = Path(config.RootDir)
+    config.TrajectoriesPath = Path(config.TrajectoriesPath)
 
     print(f"{config.pygnome_script=}")
 

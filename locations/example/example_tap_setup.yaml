@@ -2,16 +2,23 @@ CubeDataType: float32
 CubeType: Volume
 CubesPath: Cubes
 CubesRootNames:
-- SoCa
-- SoCa
-DataDir: !!python/object/apply:pathlib.PosixPath
-- data
+- EXAMPLE_Summer
+- EXAMPLE_Winter
+DataDir: data
 DataGaps: []
-DataStartEnd: !!python/tuple
+DataStartEnd:
 - 2004-01-01 01:00:00
 - 2013-12-31 23:00:00
-MapName: . TAP
-NumStarts: 20
+Grid:
+  max_lat: 35.5
+  max_long: 243.74
+  min_lat: 32.0
+  min_long: 238.5
+  num_lat: 176
+  num_long: 211
+MapName: Example TAP
+NumLEs: 1000
+NumStarts: 10
 OilWeatheringType: null
 OutputTimes:
 - 24
@@ -26,7 +33,6 @@ OutputUserStrings:
 - 3 output_times_in_days
 - 5 output_times_in_days
 - 7 output_times_in_days
-Path: !!python/name:pathlib.Path ''
 PresetLOCS:
 - 5 barrels
 - 10 barrels
@@ -34,18 +40,24 @@ PresetLOCS:
 PresetSpillAmounts:
 - 1000 barrels
 - 100 barrels
-Project: .
+Project: Example
 ReceptorType: Grid
-ReleaseLength: 120
-RootDir: !!python/object/apply:pathlib.PosixPath []
-RunSites: !!python/object/apply:builtins.range
+ReleaseLength: 12
+RootDir: .
+RunSites:
 - 0
+- 1
+RunStarts:
+- 0
+- 1
 - 2
-- 1
-RunStarts: !!python/object/apply:builtins.range
-- 0
-- 20
-- 1
+- 3
+- 4
+- 5
+- 6
+- 7
+- 8
+- 9
 Seasons:
 - - Summer
   - - 6
@@ -61,32 +73,38 @@ Seasons:
     - 3
     - 4
     - 5
-SpillAmount: !!python/tuple
+SpillAmount:
 - 1000
 - bbl
 StartSites:
-- - -117.211873
+- name: Ellen
+  oil_file: AD01438.json
+  spill_amount:
+  - 1000
+  - bbl
+  start_position:
+  - -117.211873
   - 32.682502
-  - AD01438
-  - Ellen
-- - -117.226992
+- name: Elly
+  oil_file: AD01438.json
+  spill_amount:
+  - 1000
+  - bbl
+  start_position:
+  - -117.226992
   - 32.676416
-  - AD01438
-  - Elly
 StartTimeFiles:
-- !!python/tuple
-  - ./SummerStarts.txt
+- - ./SummerStarts.txt
   - Summer
-- !!python/tuple
-  - ./WinterStarts.txt
+- - ./WinterStarts.txt
   - Winter
 TimeSeries: null
 TrajectoriesPath: TrajectoriesOut
 TrajectoryRunLength: 168
-datetime: !!python/name:datetime.datetime ''
-np: !!python/module:numpy ''
-os: !!python/module:os ''
+VariableMass: true
+pygnome_script: make_gnome_model.py
 r0: 0
-r1: 20
+r1: 10
+re_initialize_model: true
 s0: 0
 s1: 2

@@ -30,7 +30,7 @@ a_list_of_strings:
 - this
 - that
 - the_other
-a_tuple_of_numbers: !!python/tuple
+a_tuple_of_numbers:
 - 3
 - 4
 - 5

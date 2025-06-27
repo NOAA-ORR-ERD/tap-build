@@ -19,9 +19,10 @@ Input required:
 """
 
 import os
+from pathlib import Path
+from time import time
 
 import numpy as np
-from time import time
 
 from . import tap_mod
 from . import oil_weathering
@@ -33,6 +34,13 @@ from .utilities import load_config, read_start_times_file
 def build_cubes(config_file):
 
     config = load_config(config_file)
+
+    # convert paths:
+    config.RootDir = Path(config.RootDir)
+    config.TrajectoriesPath = Path(config.TrajectoriesPath)
+
+    # make Grid object
+
 
     # create the dir for all the cubes:
     FullCubesPath = config.RootDir / config.CubesPath
@@ -76,13 +84,7 @@ def build_cubes(config_file):
     CubesList.sort()
                 
     if config.ReceptorType == "Grid":
-        Grid = config.Grid
-        Receptors = tap_mod.Grid(Grid.min_long,
-                                 Grid.max_long,
-                                 Grid.min_lat,
-                                 Grid.max_lat,
-                                 Grid.num_lat,
-                                 Grid.num_long)
+        Receptors = tap_mod.Grid(**config.Grid)
         
         for TrajFilesDir, CubeName, Months in CubesList:
             print("processing Cube::", CubeName)

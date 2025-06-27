@@ -3,10 +3,9 @@ Simple file to use for testing the config loader
 
 you can make a yaml file that matches this with:
 
-config = SourceFileLoader("config", "example_files/config.py").load_module()
-DATA = {key:val for key,val in vars(config).items() if not key.startswith("_")}
-yaml.dump(DATA, open('config.yaml', 'w'))
+tapbuild/utilities/py2yaml.py
 
+You'll want to run that if you change this.
 """
 
 one_value = 3.1459

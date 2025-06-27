@@ -9,15 +9,22 @@ commands = {"start_times": build_start_times.build_start_times,
             "build_cubes": build_cubes.build_cubes,
             }
 
+HELP = ("tapbuild CMD CONFIG_file\n\n"
+        "You must pass in a command and the path to a tap config"
+        "file (python or yaml file)\n\n"
+        f"Command options are: {[*commands]}\n\n"
+        "You passed: {}")
+
 
 def main():
-    err_msg = ("You must pass in a command, and the path to a tap config file (python file)\n"
-              f"Command options are: {[*commands]}\n"
-              f"You passed: {sys.argv[1:]}")
+    err_msg = HELP.format(sys.argv[1:])
     # note: use click or docopt to make this fancier?
     try:
         command = sys.argv[1].strip()
     except IndexError:
+        print(err_msg)
+        sys.exit()
+    if command not in commands:
         print(err_msg)
         sys.exit()
 

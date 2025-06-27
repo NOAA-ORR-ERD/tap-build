@@ -45,17 +45,19 @@ def load_config(config_file):
 
     returns: an object with a namespace with configuration info
 
-    Currently it can only load a python file, but could be extended in the future to load yaml, or ...
+    Currently it can load a python or yaml file.
 
     NOTE: this could use `runpy.run_path()` and always get a dict.
     """
     config_file = os.fspath(config_file)
+    print(f"Name of config file: {config_file}")
 
     if config_file[-3:] == ".py":
         config = import_from_path("config", config_file)
     elif config_file[-5:] == ".yaml":
         with open(config_file, encoding='utf-8') as infile:
-            data = yaml.load(infile, Loader=yaml.Loader)
+            # data = yaml.load(infile, Loader=yaml.Loader)
+            data = yaml.safe_load(infile)
         config = SimpleNamespace(**data)
     else:
         raise ValueError(f"can only load Python (*.py) or yaml (*.yaml) files, not: {config_file}")
