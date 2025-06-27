@@ -36,9 +36,9 @@ def run_gnome(config_file):
     # timingRecord = open(os.path.join(RootDir,"timing.txt"),"w")
     # count = len(StartTimeFiles) * len(RunStarts) * len(RunSites)
     # timingRecord.write("This file tracks the time to process "+str(count)+" gnome runs")
-    
+
     # make the model now, unless config says to re-initialize each run.
-    model = None if config.re_initialize_model else model_runner.initilize_model(config)
+    model = None if config.re_initialize_model else model_runner.initialize_model(config)
 
     for season in config.Seasons:
         season_name = season[0]
@@ -61,7 +61,7 @@ def run_gnome(config_file):
                 start_site['output_timestep'] = timedelta(hours=config.OutputTimestep)
 
 
-                model = model_runner.initilize_model(config) if model is None else model
+                model = model_runner.initialize_model(config) if model is None else model
 
                 # build the NetCDF outputter
                 model = model_runner.setup_for_run(model, config, start_site)
@@ -81,52 +81,52 @@ def run_gnome(config_file):
 #     # model timing
 #     release_duration = timedelta(hours=ReleaseLength)
 #     run_time = timedelta(hours=TrajectoryRunLength)
-    
+
 #     # initiate model
 #     model = gs.Model(duration=run_time,
 #                   time_step=model_timestep,
 #                   uncertain=False)
-    
+
 #     # determine boundary for model
 #     print("Adding the map:",MapFileName)
 #     # mapfile = get_datafile(MapFileName)
 #     model.map = gs.MapFromBNA(MapFileName, refloat_halflife=refloat)
-    
+
 #     # get time details for forcing files
 #     Time_MapC = get_Time_MapC(current_files)
 #     Time_MapW = get_Time_MapW(wind_files)
-        
+
 #     # loop through seasons
 #     for Season in StartTimeFiles:
 #         # timer1 = datetime.now()
-        
+
 #         SeasonName = Season[1]
 #         start_times = open(Season[0],'r').readlines()[:NumStarts]
 #         make_dir(os.path.join(RootDir,TrajectoriesPath,SeasonName))
 #         print("  Season: ",SeasonName)
-        
+
 #         # get and parse start times in this season
 #         start_dt = []
 #         for start_time in start_times:
 #             start_time = [int(i) for i in start_time.split(',')]
 #             start_time = datetime(start_time[0],start_time[1],start_time[2],start_time[3],start_time[4])
 #             start_dt.append(start_time)
-        
+
 #         ## loop through start times
 #         for time_idx in RunStarts:
 #             # timer2 = datetime.now()
-            
+
 #             gc.collect()
 #             model.movers.clear()
 #             model.environment.clear()
 #             model.weatherers.clear()
-            
+
 #             ## set the start time
 #             start_time = start_dt[time_idx]
 #             end_time = start_time + run_time
 #             model.start_time = start_time
 #             print("  ",start_time," to ",end_time)
-            
+
 
 #             # set up the model with the correct forcing files for this time/duration
 #             file_list_c = get_file_list(start_time,end_time,Time_MapC)
@@ -135,10 +135,10 @@ def run_gnome(config_file):
 
 #             print('number of ROMS files :: ', len(file_list_c))
 #             print(file_list_c)
-        
+
 #             print('number of wind files :: ', len(file_list_w))
 #             print(file_list_w)
-            
+
 #             # print('creating curr MFDataset')
 #             # ds_c = nc4.MFDataset(file_list_c)
 #             print('adding a CurrentMover (Trapeziod/RK4):')
@@ -158,10 +158,10 @@ def run_gnome(config_file):
 #                                     )
 #             w_mover = gs.WindMover(wind = g_wind, default_num_method='Euler')
 #             model.movers += w_mover
-            
+
 #             ## add diffusion
 #             model.movers += gs.RandomMover(diffusion_coef=diffusion_coef)
-            
+
 #             if VariableMass:
 #                 model.environment += g_wind
 #                 water = gs.Water(temperature=waterTemp,salinity=waterSal)
@@ -173,7 +173,7 @@ def run_gnome(config_file):
 #             ## loop through start locations
 #             for pos_idx in RunSites:
 #                 # timer3 = datetime.now()
-                
+
 #                 start_position = [float(i) for i in StartSites[pos_idx][0].split(',')]
 #                 print(start_position)
 #                 start_OilType = None
@@ -187,12 +187,12 @@ def run_gnome(config_file):
 
 #                 OutDir = os.path.join(RootDir,TrajectoriesPath,SeasonName,'pos_%03i'%(pos_idx+1))
 #                 make_dir(OutDir)
-                
+
 #                 print("    ",pos_idx,time_idx)
 #                 print("    Running: start time:",start_time)
 #                 print("      at start location: ",start_position)
 #                 print("      with oil ",start_OilFile)
-                
+
 #                 ## set the spill to the location
 #                 spill = gs.surface_point_line_spill(num_elements=NumLEs,
 #                                                  start_position=(start_position[0], start_position[1], 0.0),
@@ -203,19 +203,19 @@ def run_gnome(config_file):
 #                                                  substance=gs.GnomeOil(filename=start_OilFile),
 #                                                  amount=spill_amount,
 #                                                  units=spill_units)
-                
+
 #                 # print "adding netcdf output"
 #                 netcdf_output_file = os.path.join(OutDir,'pos_%03i-t%03i_%08i.nc'
 #                                                   %(pos_idx+1, time_idx,int(start_time.strftime('%y%m%d%H'))),
 #                                                   )
 #                 model.outputters.clear()
 #                 model.outputters += NetCDFOutput(netcdf_output_file,output_timestep=timedelta(hours=OutputTimestep),surface_conc=None)
-                
+
 #                 model.spills.clear()
 #                 model.spills += spill
-                
+
 #                 model.full_run(rewind=True)
-                
+
 #     #             timer4 = datetime.now()
 #     #             diff = round((timer4-timer3).total_seconds() / 60, 2)
 #     #             timingRecord.write("\t\t"+str(pos_idx)+" took "+str(diff)+" minutes to complete")
