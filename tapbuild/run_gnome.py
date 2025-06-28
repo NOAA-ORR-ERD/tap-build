@@ -59,16 +59,20 @@ def run_gnome(config_file):
                 start_site['run_duration'] = timedelta(hours=config.TrajectoryRunLength)
                 start_site['release_duration'] = timedelta(hours=config.ReleaseLength)
                 start_site['output_timestep'] = timedelta(hours=config.OutputTimestep)
-
+                
+                netcdf_output_file = (out_dir / ('pos_%03i-t%03i_%08i.nc'
+                                                  %(pos_idx+1, time_idx, int(start_time.strftime('%y%m%d%H'))))
+                                                  )
+                if netcdf_output_file.exists:
+                    print('Already ran this one')
+                    continue
 
                 model = model_runner.initialize_model(config) if model is None  or config.re_initialize_model else model
 
                 # build the NetCDF outputter
                 model = model_runner.setup_for_run(model, config, start_site)
 
-                netcdf_output_file = (out_dir / ('pos_%03i-t%03i_%08i.nc'
-                                                  %(pos_idx+1, time_idx, int(start_time.strftime('%y%m%d%H'))))
-                                                  )
+
                 model.outputters.clear()
                 model.outputters += gs.NetCDFOutput(netcdf_output_file,
                                                     output_timestep=timedelta(hours=config.OutputTimestep),
@@ -76,6 +80,7 @@ def run_gnome(config_file):
 
                 if not config.re_initialize_model:
                     gc.collect()
+                    
                 model.full_run()
 
 #     # model timing
