@@ -65,6 +65,7 @@ def run_gnome(config_file):
                                                   )
                 if netcdf_output_file.exists:
                     print('Already ran this one')
+
                 
                 else:
 
@@ -83,6 +84,7 @@ def run_gnome(config_file):
                         gc.collect()
                         
                     model.full_run()
+
 
 #     # model timing
 #     release_duration = timedelta(hours=ReleaseLength)
