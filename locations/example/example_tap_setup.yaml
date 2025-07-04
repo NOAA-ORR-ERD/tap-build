@@ -4,7 +4,7 @@ CubesPath: Cubes
 CubesRootNames:
 - EXAMPLE_Summer
 - EXAMPLE_Winter
-DataDir: data
+DataDir: locations/example/data
 DataGaps: []
 DataStartEnd:
 - 2004-01-01 01:00:00
@@ -19,7 +19,7 @@ Grid:
 MapFileName: SanDiegoMap.bna
 MapName: Example TAP
 NumLEs: 1000
-NumStarts: 10
+NumStarts: 5
 OilWeatheringType: null
 OutputTimes:
 - 24
@@ -27,7 +27,7 @@ OutputTimes:
 - 72
 - 120
 - 168
-OutputTimestep: 12
+OutputTimestep: 1
 OutputUserStrings:
 - 1 output_times_in_days
 - 2 output_times_in_days
@@ -41,10 +41,9 @@ PresetLOCS:
 PresetSpillAmounts:
 - 1000 barrels
 - 100 barrels
-Project: Example
 ReceptorType: Grid
 ReleaseLength: 12
-RootDir: .
+RootDir: locations/example
 RunSites:
 - 0
 - 1
@@ -54,11 +53,6 @@ RunStarts:
 - 2
 - 3
 - 4
-- 5
-- 6
-- 7
-- 8
-- 9
 Seasons:
 - - Summer
   - - 6
@@ -95,17 +89,17 @@ StartSites:
   - -117.226992
   - 32.676416
 StartTimeFiles:
-- - ./SummerStarts.txt
+- - locations/example/SummerStarts.txt
   - Summer
-- - ./WinterStarts.txt
+- - locations/example/WinterStarts.txt
   - Winter
 TimeSeries: null
-TrajectoriesPath: TrajectoriesOut
+TrajectoriesPath: locations/example/TrajectoriesOut
 TrajectoryRunLength: 168
 VariableMass: true
-pygnome_script: make_gnome_model.py
+pygnome_script: locations/example/make_gnome_model.py
 r0: 0
-r1: 10
+r1: 5
 re_initialize_model: true
 s0: 0
 s1: 2
