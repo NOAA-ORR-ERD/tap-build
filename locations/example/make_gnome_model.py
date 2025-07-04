@@ -25,7 +25,7 @@ import gnome.scripting as gs
 
 
 
-def initilize_model(config):
+def initialize_model(config):
     """
     Set up the model with all the not-specific to the run stuff
 
