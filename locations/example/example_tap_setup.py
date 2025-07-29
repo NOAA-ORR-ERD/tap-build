@@ -72,7 +72,7 @@ ReleaseLength = 12 # Length of release in hours (0 for instantaneous)
 DataStartEnd = [datetime(2004, 1, 1, 1), datetime(2013, 12, 31, 23)]
 
 # Needed if there are gaps in the data ...
-# though maybe not yet implimented?
+# though maybe not yet implimented in the "new" code.
 DataGaps = []
 
 # specification for how you want seasons to be defined, as a list of lists:
@@ -97,7 +97,7 @@ Seasons = [
 #             ['May', [5]],
 #           ]
 
-NumStarts = 10 # number of start times you want in each season
+NumStarts = 5 # number of start times you want in each season
 
 # this is used to then compute the "real" variables:
 output_times_in_days = [1, 2, 3, 5, 7]
@@ -105,7 +105,6 @@ output_times_in_days = [1, 2, 3, 5, 7]
 ##############################################################
 ###### Additional Calculations (and less common inputs) ######
 ##############################################################
-Project = "Example"
 
 StartTimeFiles = [[os.path.join(RootDir, s[0]+'Starts.txt'), s[0]] for s in Seasons]
 
@@ -114,10 +113,10 @@ OutputTimes = [24*i for i in output_times_in_days] # output times in hours (calc
 OutputUserStrings = ['%d output_times_in_days'%i for i in output_times_in_days]
 del output_times_in_days # not really required to delete, but safer
 
-OutputTimestep = 12 #hours
+OutputTimestep = 1 # output from GNOME (netCDF outputter) in hours
 TrajectoryRunLength = max(OutputTimes)
 TrajectoriesPath = RootDir / 'TrajectoriesOut'
-MapName = Project + ' TAP'
+MapName = 'Example TAP'  # name for the TAP viewer
 CubesPath = 'Cubes'
 CubesRootNames = [f'EXAMPLE_{i[1]}' for i in StartTimeFiles] # built to match the start time files
 
