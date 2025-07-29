@@ -63,7 +63,7 @@ def run_gnome(config_file):
                 netcdf_output_file = (out_dir / ('pos_%03i-t%03i_%08i.nc'
                                                   %(pos_idx+1, time_idx, int(start_time.strftime('%y%m%d%H'))))
                                                   )
-                if netcdf_output_file.exists:
+                if netcdf_output_file.exists():
                     print('Already ran this one')
 
                 
