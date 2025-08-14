@@ -1,0 +1,38 @@
+Seasons:
+- - AllYear
+  - - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+- - Summer
+  - - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+- - Winter
+  - - 12
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+a_list_of_strings:
+- this
+- that
+- the_other
+a_tuple_of_numbers:
+- 3
+- 4
+- 5
+- 6
+one_value: 3.1459

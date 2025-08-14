@@ -1,0 +1,105 @@
+CubeDataType: float32
+CubeType: Volume
+CubesPath: Cubes
+CubesRootNames:
+- EXAMPLE_Summer
+- EXAMPLE_Winter
+DataDir: locations/example/data
+DataGaps: []
+DataStartEnd:
+- 2004-01-01 01:00:00
+- 2013-12-31 23:00:00
+Grid:
+  max_lat: 35.5
+  max_long: 243.74
+  min_lat: 32.0
+  min_long: 238.5
+  num_lat: 176
+  num_long: 211
+MapFileName: SanDiegoMap.bna
+MapName: Example TAP
+NumLEs: 1000
+NumStarts: 5
+OilWeatheringType: null
+OutputTimes:
+- 24
+- 48
+- 72
+- 120
+- 168
+OutputTimestep: 1
+OutputUserStrings:
+- 1 output_times_in_days
+- 2 output_times_in_days
+- 3 output_times_in_days
+- 5 output_times_in_days
+- 7 output_times_in_days
+PresetLOCS:
+- 5 barrels
+- 10 barrels
+- 20 barrels
+PresetSpillAmounts:
+- 1000 barrels
+- 100 barrels
+ReceptorType: Grid
+ReleaseLength: 12
+RootDir: locations/example
+RunSites:
+- 0
+- 1
+RunStarts:
+- 0
+- 1
+- 2
+- 3
+- 4
+Seasons:
+- - Summer
+  - - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+- - Winter
+  - - 12
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+SpillAmount:
+- 1000
+- bbl
+StartSites:
+- name: Ellen
+  oil_file: AD01438.json
+  spill_amount:
+  - 1000
+  - bbl
+  start_position:
+  - -117.211873
+  - 32.682502
+- name: Elly
+  oil_file: AD01438.json
+  spill_amount:
+  - 1000
+  - bbl
+  start_position:
+  - -117.226992
+  - 32.676416
+StartTimeFiles:
+- - locations/example/SummerStarts.txt
+  - Summer
+- - locations/example/WinterStarts.txt
+  - Winter
+TimeSeries: null
+TrajectoriesPath: locations/example/TrajectoriesOut
+TrajectoryRunLength: 168
+VariableMass: true
+pygnome_script: locations/example/make_gnome_model.py
+r0: 0
+r1: 5
+re_initialize_model: true
+s0: 0
+s1: 2

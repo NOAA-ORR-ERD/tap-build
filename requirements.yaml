@@ -15,13 +15,13 @@
 #   $ git checkout develop 
 #   $ python -m pip install ./
 # OR (for editable version)
-#   $ pip install --no-build-isolation -e ./ 
+#   $ pip install --no-build-isolation -e ./
 #  
-# NOTE: This file requires the user to have a git token and 
+# NOTE: This file requires the user to have a git token and
 #       will prompt user for the password during install
 #
-# To avoid need for Git token, comment out `-pip:` section 
-# and, within the gnome_tap environment, clone and install 
+# To avoid need for Git token, comment out `-pip:` section
+# and, within the gnome_tap environment, clone and install
 # (1) tap-build and (2) post-gnome to their own directories:
 #   $ git clone ssh://git@gitlab.orr.noaa.gov:9933/gnome/tap/tapbuild.git
 #   $ cd tapbuild
@@ -58,6 +58,7 @@ dependencies:
 ## Base numerical libs
 - numpy
 - scipy
+- xarray
 
 # File I/O
 - xarray
@@ -90,25 +91,20 @@ dependencies:
 - gitpython
 
 ## TAP libs
-- bumpversion
-- wheel
-- watchdog
-- flake8
-- tox
-- coverage
-- Sphinx
+- pip
+- sphinx
+- matplotlib # post_gnome
 - pyshp # post_gnome
 - pytest # post_gnome
 
 ## Graphics/development
 - cartopy # post_gnome
 - matplotlib # post_gnome
-- Jupyter 
+- Jupyter
 
 ## Package installs
-- pip
 - pip:
-   - -e git+https://${USER}@gitlab.orr.noaa.gov/gnome/tap/tapbuild.git#egg=tapbuild
+   - git+https://${USER}@gitlab.orr.noaa.gov/gnome/tap/tapbuild.git#egg=tapbuild
    - git+https://${USER}@gitlab.orr.noaa.gov/gnome/post_gnome.git
-   - -e git+https://${USER}@gitlab.orr.noaa.gov/gnome/pygnome.git#egg=gnome&subdirectory=py_gnome
+   - git+https://${USER}@gitlab.orr.noaa.gov/gnome/pygnome.git#egg=gnome&subdirectory=py_gnome
 

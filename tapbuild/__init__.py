@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
+# Any names (function, class, etc) placed here will be available as tapbuild.[name] on local system with package install
 
-__author__ = """Dylan Righi"""
-__email__ = 'dylan.righi@noaa.gov'
-__version__ = '0.1.0'
+__version__ = '0.2.1'

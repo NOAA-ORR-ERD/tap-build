@@ -5,22 +5,28 @@ Code to read a set of OSSM time files, and generate a set of valid start times.
 """
 
 from datetime import datetime, timedelta
-import os, random
+import os
+import random
+from pathlib import Path
+
+from tapbuild.utilities import load_config
 
 random.seed(1) # so that all runs get the same sequence
 
-def main(RootDir, DataStartEnd, DataGaps, Seasons, NumStarts, TrajectoryRunLength, TimeSeries):
+#def main(RootDir, DataStartEnd, DataGaps, Seasons, NumStarts, TrajectoryRunLength, TimeSeries):
+def build_start_times(config_file):
+
+    config = load_config(config_file)
     
-    RunTime = timedelta(hours = TrajectoryRunLength)
-    print(RunTime)   
+    RunTime = timedelta(hours = config.TrajectoryRunLength)
     
-    if TimeSeries is None:
-        Start, End = DataStartEnd
-        if DataGaps:
-            FindStarts(RootDir, Start, End, SimpleGapSet(DataGaps), RunTime, NumStarts, Seasons)
+    if config.TimeSeries is None:
+        Start, End = config.DataStartEnd
+        if config.DataGaps:
+            FindStarts(config.RootDir, Start, End, SimpleGapSet(DataGaps), RunTime, config.NumStarts, config.Seasons)
         else:  
-            ## fixme: isthe required, or would an empty list be fine for gaps            
-            FindStarts(RootDir, Start, End, EmptyGapSet(), RunTime, NumStarts, Seasons)
+            ## fixme: is the required, or would an empty list be fine for gaps
+            FindStarts(config.RootDir, Start, End, EmptyGapSet(), RunTime, config.NumStarts, config.Seasons)
     else:
         files = TimeSeries
         Start, End, AllGaps = FindGaps()
@@ -205,8 +211,16 @@ class SimpleGapSet(GapSet):
     # same thing, but with a different __init__
     def __init__(self, Gaps):
         self.Gaps = Gaps
+
+def main():
+    import sys
+    try:
+        config_file = sys.argv[1]
+    except IndexError:
+        print("you must pass in the path to a tap config file (python file)")
+    main(config_file)
         
 if __name__ == '__main__':
-    import Setup_TAP as tap
-    main(tap.RootDir, tap.DataStartEnd, tap.DataGaps, tap.Seasons, tap.NumStarts,
-         tap.TrajectoryRunLength, tap.TimeSeries)
+    main()
+
+

@@ -697,6 +697,7 @@ def CompThicknessCube(FileList, OutputTimes, Grid, Weather=None, VariableMass=No
     #print "**************"
     #print "getting header info from file:", FileList[0]
     traj_file = nc_particles.Reader(FileList[0])
+    print("tap_mod.py(700): ", FileList[0])
 
     if traj_file.get_units('age') != 'seconds':
         raise ValueError("particle age units in netcdf file must be in seconds")

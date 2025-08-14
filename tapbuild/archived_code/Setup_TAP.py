@@ -1,39 +1,35 @@
 """
-TAP Setup.py
+And example master set up script for a TAP run
 
-Master set up script for a TAP run
+All the data required to set up and build TAP cubes + site.json file should be in here
 
-All the data required to set up and build TAP cubes + site.txt file should be in here
+NOTE: it relies on a run_pygnome script that needs to be developed
 
 """
 
 import os
 from datetime import datetime
+from pathlib import Path
 import numpy as np
 
+
 # Location to read and write files for this TAP application
-# RootDir = "C:/Users/dylan.righi/Science/TapSites/Socal"
-# RootDir = "/data/dylan/TapSites/SoCal"   # Gonzo 
-RootDir = "/data/dylan/TapSites/SouthernCalifornia"    
+# this example is relative to the location of this setup script
+#  -- but you can hard-code anything.
+RootDir = Path(__file__).parent
 
+RootDir.mkdir(parents=True, exist_ok=True)
 
-if not os.path.exists(RootDir):
-    os.makedirs(RootDir)
     
 # Location of Gnome data forcing
-# Data_DirC = "C:/Users/dylan.righi/Science/SoCalTAP/Data/gnome_ucla/surface/"
-# Data_DirW = "C:/Users/dylan.righi/Science/SoCalTAP/Data/gnome_ucla/wind/"
-Data_DirC = "/data/dylan/SoCalTAP/Data/gnome_ucla/surface/"     # Gonzo
-Data_DirW = "/data/dylan/SoCalTAP/Data/gnome_ucla/wind/"
+# Data_DirC = "/data/dylan/SoCalTAP/Data/gnome_ucla/surface/"     # Gonzo
+# Data_DirW = "/data/dylan/SoCalTAP/Data/gnome_ucla/wind/"
 
-if not os.path.exists(Data_DirC):
-    raise Exception("RootDir: %s Doesn't exist"%Data_DirC)
+DataDir = RootDir / "data"
 
-BuildStartTimes = True
-RunPyGnome = True
-BuildCubes = True
-BuildSite = True
-BuildViewer = False
+if not isdir(DataDir):
+    raise ValueError(f"DataDir: {DataDir} Doesn't exist")
+
 
 ###################################
 ###### **** User Inputs **** ######
@@ -41,57 +37,34 @@ BuildViewer = False
 print "\nAnalyzing User Inputs"
 
 # Spill information
-#StartSites = ['-125.7, 48.2', '-125.15, 47.8', '-125.2, 48.2', '-125, 47.1']
+# each start site is: a [lon, lat, oil_id, name]
 StartSites = [
 ['241.8717778, 33.58236667', 'AD01438', 'Ellen'],
 ['241.8729111, 33.58340278', 'AD01438', 'Elly'],
-['241.8835056, 33.56378056', 'AD01438', 'Eureka'],
-['239.3191833, 34.46913611', 'AD02286', 'Harvest'],
-['239.3536111, 34.45550833', 'AD02286', 'Hermosa'],
-['239.2977111, 34.49501389', 'AD02286', 'Hildago'],
-['239.8794695, 34.39073055', 'AD01349', 'Hondo'],     # edited, errors in BOEM data
-['239.832475,  34.37667500', 'AD01349', 'Harmony'],     # edited, errors in BOEM data
-['239.7208167, 34.35039167', 'AD01349', 'Heritage'],  # edited, errors in BOEM data
-['241.8593139, 33.59578611', 'AD01438', 'Edith'],
-['240.7237417, 34.11749722', 'AD02302', 'Gina'],
-['240.5814361, 34.18234167', 'AD02323', 'Gilda'],
-['240.3875306, 34.33188611', 'AD02088', 'A'],      # edited, initially wrong lon
-['240.3784639, 34.33234167', 'AD02088', 'B'],
-['240.3692333, 34.332925  ', 'AD02088', 'C'],
-['240.3967528, 34.33134444', 'AD02088', 'Hillhouse'],
-['240.4396028, 34.33325556', 'AD02061', 'Henry'],
-['240.4119056, 34.28661667', 'AD02297', 'Habitat'],
-['239.2705722, 34.61041944', 'AD02286', 'Irene'],
-['240.4585139, 34.337675  ', 'AD02061', 'Hogan'],
-['240.4478833, 34.33499167', 'AD02061', 'Houchin'],
-['240.5997833, 34.12510833', 'AD02298', 'Gail'],
-# ['237.4821722, 34.17957222', 'AD02323', 'Grace'], # initially wrong long
-['240.5306083, 34.17957222', 'AD02323', 'Grace'], 
 ]
 
+# Refactor: move this kind of info into the PyGNOME config?
+
 # OilType = None
-VariableMass = True  # True if you want GNOME runs with weathering 
+# VariableMass = True  # True if you want GNOME runs with weathering
                      # (must have ADIOS oil json files available )
-if VariableMass:
-    # need to match oil types with oil json files and add filename to StartSites list
-    flist = os.listdir(os.path.join(RootDir,"Oils"))
-    for count,site in enumerate(StartSites):
-        oilf = [i for i in flist if site[1] in i]
-        StartSites[count].append(os.path.join(RootDir,oilf))
 
-waterTemp = 290
-waterSal = 33
-# SpillAmount = [1, 'kg']
-SpillAmount = [1000, 'bbl']
+# waterTemp = 290
+# waterSal = 33
+# # SpillAmount = [1, 'kg']
+
+SpillAmount = (1000, 'bbl')
 
 
-NumLEs = 10000 # number of Lagrangian elements you want in the GNOME run
+# NumLEs = 10000 # number of Lagrangian elements you want in the GNOME run
+
 ReleaseLength = 5*24 # Length of release in hours (0 for instantaneous)
 
 # time span of your data set
 # DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2004, 2, 26, 23))
 DataStartEnd = (datetime(2004, 1, 1, 1), datetime(2013, 12, 31, 23))
-DataGaps = ( )
+# still needed??
+#DataGaps = ( )
 
 # specification for how you want seasons to be defined, as a list of lists:
 #  [name, (months) ]
@@ -118,25 +91,30 @@ Seasons = [
 #             ['Apr', [4]],
 #             ['May', [5]],
 #           ]
-NumStarts = 200 # number of start times you want in each season:
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+# Number of runs
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+NumStarts = 10 # number of start times you want in each season:
+
+# what's days??
 # days = [1, 2, 3, 4, 5, 7, 10, 14, 21]
-days = [1, 2, 3, 5, 7, 14, 21]
+# days = [1, 2, 3, 5, 7, 14, 21]
 
 # days = [1, 3, 5, 7, 10, 15, 20, 30, 50, 70, 90, 120, 135, 150]
 
 # Inputs needed for PyGnome
-MapFileName, MapFileType = (os.path.join(RootDir,'SoCalcoast_pos.bna'), 'BNA')
+# MapFileName, MapFileType = (os.path.join(RootDir,'SoCalcoast_pos.bna'), 'BNA')
 
-current_files = []
-for ftmp in  os.listdir(Data_DirC):
-    if ftmp[-3:] == '.nc':
-        current_files.append(os.path.join(Data_DirC, ftmp))
+# current_files = []
+# for ftmp in  os.listdir(Data_DirC):
+#     if ftmp[-3:] == '.nc':
+#         current_files.append(os.path.join(Data_DirC, ftmp))
 
-wind_files = []
-for ftmp in  os.listdir(Data_DirW):
-    if ftmp[-3:] == '.nc':
-        wind_files.append(os.path.join(Data_DirW, ftmp))
+# wind_files = []
+# for ftmp in  os.listdir(Data_DirW):
+#     if ftmp[-3:] == '.nc':
+#         wind_files.append(os.path.join(Data_DirW, ftmp))
 
 
 # current_files = [
@@ -149,11 +127,11 @@ for ftmp in  os.listdir(Data_DirW):
 #               os.path.join(Data_Dir,"CFSRWind_0.5deg_10m_2001_Pacific.nc"),
 #              ]
 
-refloat = -1
-windage_range = (0.02,0.04)
-windage_persist = 900
-diffusion_coef = 10000  # 1.e4
-model_timestep = 15*60 # timestep in seconds
+# refloat = -1
+# windage_range = (0.02,0.04)
+# windage_persist = 900
+# diffusion_coef = 10000  # 1.e4
+# model_timestep = 15*60 # timestep in seconds
 
 ##############################################################
 ###### Additional Calculations (and less common inputs) ######
@@ -171,7 +149,7 @@ CubesRootNames = ['SoCa' for i in StartTimeFiles] # built to match the start tim
 
 # Can be used to filter out some start sites and start times
 # These variables function as an index map
-s0,s1 = [0,len(StartSites)]
+s0,s1 = [0, len(StartSites)]
 RunSites = range(s0,s1)
 
 r0,r1 = [0,NumStarts]
@@ -197,7 +175,7 @@ CubeDataType = 'float32'
 #         are: "Wind", "Hyd" for Wind or hydrology type files
 # if set to None, model start and end times will be used
 #TimeSeries = [("WindData.OSM", datetime.timedelta(hours = 6), "Wind" ),]
-TimeSeries = None
+# TimeSeries = None
 
 #If ReceptorType is Grid, you need these, it defines the GRID
 class Grid:
@@ -228,6 +206,13 @@ TAPViewerPath = Project + "_TapView"
 #############################
 ###### Running Scripts ######
 #############################
+
+# BuildStartTimes = True
+# RunPyGnome = True
+# BuildCubes = True
+# BuildSite = True
+# BuildViewer = False
+
 if BuildStartTimes and __name__ == '__main__':
     print "\n---Building Start Times---"
     from tapbuild import BuildStartTimes
