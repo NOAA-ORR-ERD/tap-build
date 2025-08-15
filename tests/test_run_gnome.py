@@ -26,7 +26,7 @@ def test_run_example():
     config = load_config(EXAMPLE_DIR / "example_tap_setup.py")
     model_runner = load_config(EXAMPLE_DIR / "make_gnome_model.py")
 
-    model = model_runner.initilize_model(config)
+    model = model_runner.initialize_model(config)
 
     model_runner.setup_for_run(model, config, example_run_params)
 
