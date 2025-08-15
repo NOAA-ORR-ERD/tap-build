@@ -4,7 +4,7 @@ CubesPath: Cubes
 CubesRootNames:
 - EXAMPLE_Summer
 - EXAMPLE_Winter
-DataDir: locations/example/data
+DataDir: data
 DataGaps: []
 DataStartEnd:
 - 2004-01-01 01:00:00
@@ -43,7 +43,7 @@ PresetSpillAmounts:
 - 100 barrels
 ReceptorType: Grid
 ReleaseLength: 12
-RootDir: locations/example
+RootDir: .
 RunSites:
 - 0
 - 1
@@ -89,15 +89,15 @@ StartSites:
   - -117.226992
   - 32.676416
 StartTimeFiles:
-- - locations/example/SummerStarts.txt
+- - ./SummerStarts.txt
   - Summer
-- - locations/example/WinterStarts.txt
+- - ./WinterStarts.txt
   - Winter
 TimeSeries: null
-TrajectoriesPath: locations/example/TrajectoriesOut
+TrajectoriesPath: TrajectoriesOut
 TrajectoryRunLength: 168
 VariableMass: true
-pygnome_script: locations/example/make_gnome_model.py
+pygnome_script: make_gnome_model.py
 r0: 0
 r1: 5
 re_initialize_model: true

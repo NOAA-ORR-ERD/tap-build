@@ -6,6 +6,11 @@ Not really robust, but should do the basics.
 
 What it does is simply make a dict out of the global namespace and dump it.
 
+must be run as a top-level script -- i.e. not installed
+
+NOTE: you need to make sure the current working dir is the same as the
+      one the python file is in, so relative paths will work.
+
 """
 
 from importlib.machinery import SourceFileLoader
