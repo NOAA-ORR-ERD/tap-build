@@ -10,7 +10,7 @@ import sys
 import os
 from datetime import datetime, timedelta
 from pathlib import Path
-from .utilities import load_config, read_start_times_file
+from .utilities import load_config, import_from_path, read_start_times_file
 
 import gc  # garbage collector
 
@@ -31,7 +31,7 @@ def run_gnome(config_file):
 
     print(f"{config.pygnome_script=}")
 
-    model_runner = load_config(config.pygnome_script)
+    model_runner = import_from_path("model_runner", config.pygnome_script)
 
     # timingRecord = open(os.path.join(RootDir,"timing.txt"),"w")
     # count = len(StartTimeFiles) * len(RunStarts) * len(RunSites)
