@@ -61,7 +61,7 @@ class weather_curve:
 
 
 ## Parameters for combined weathering and bio-degradation for "medium crude"
-## used for FL Staits TAP analysis
+## used for FL Straits TAP analysis
 mass_fractions =       [0.25,   0.1, 0.107,    0.2,  0.186,   0.109,    0.048]
 combined_half_lives =  [21.0, 422.0,   2.0, 1358.0, 1982.0,  7198.0,  14391.0]
     
