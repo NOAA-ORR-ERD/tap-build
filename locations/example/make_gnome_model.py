@@ -27,7 +27,11 @@ import gnome.scripting as gs
 
 def initialize_model(config):
     """
-    Set up the model with all the not-specific to the run stuff
+    Set up the model with all the not-specific to the run stuff (map, etc)
+
+    :param config: the configuration object -- everything loaded from the configuration python or yaml file.
+
+    :returns: A configured ``gnome.Model`` object.
 
     This will usually be more complicated -- setting up movers, currents, etc, etc.
     """
@@ -40,11 +44,24 @@ def initialize_model(config):
 
 def setup_for_run(model, config, params):
     """
-    run the model, after setting up the parameters needed.
+    Run the model, after setting up the parameters needed.
 
-    {'coords':(-117.211873, 32.682502),
-               'name': 'Ellen',
-               'oil_file': 'AD01438.json'},
+    :param model: A configured ``gnome.Model`` object usually what is returned
+                  by the initialize_model function.
+
+    :param config: The configuration object -- everything loaded from the configuration
+                   python or yaml file.
+
+    :param params: the parameters of the specific gnome run, for example::
+    :type params: dict
+
+        {'coords':(-117.211873, 32.682502),
+         'name': 'Ellen',
+         'oil_file': 'AD01438.json'},
+
+
+    :returns: A configured ``gnome.Model`` object.
+
     """
 
     # set the start_time:

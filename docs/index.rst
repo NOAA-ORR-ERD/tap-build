@@ -1,15 +1,16 @@
 Welcome to TAPbuild's documentation!
 ======================================
 
+   .. image:: images/TAP_structure__1_.jpg
+
 Contents:
+---------
 
 .. toctree::
    :maxdepth: 2
 
-   readme
    installation
    usage
-   contributing
    history
 
 Indices and tables
