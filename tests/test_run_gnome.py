@@ -7,13 +7,12 @@ and the example ...
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from tapbuild.utilities import load_config
+from tapbuild.utilities import load_config, import_from_path
 from tapbuild.run_gnome import run_gnome
 
 ## for the example pygnome file:
 
 EXAMPLE_DIR = Path(__file__).parent.parent / "locations" / "example"
-DATA_DIR = Path(__file__).parent / "full_example"
 
 example_run_params = {'start_time': datetime(2023, 6, 18, 12),
                   'release_duration': timedelta(hours=3),
@@ -24,18 +23,13 @@ example_run_params = {'start_time': datetime(2023, 6, 18, 12),
 
 def test_run_example():
     config = load_config(EXAMPLE_DIR / "example_tap_setup.py")
-    model_runner = load_config(EXAMPLE_DIR / "make_gnome_model.py")
+    model_runner = import_from_path("model_runner", EXAMPLE_DIR / "make_gnome_model.py")
 
     model = model_runner.initialize_model(config)
 
     model_runner.setup_for_run(model, config, example_run_params)
 
     model.full_run()
-
-
-def test_run_gnome():
-    run_gnome(DATA_DIR / "minimal_tap_setup.py")
-
 
 
 

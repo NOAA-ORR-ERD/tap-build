@@ -13,15 +13,16 @@ from tapbuild.build_site import build_site
 ## for the example pygnome file:
 
 EXAMPLE_DIR = Path(__file__).parent.parent / "locations" / "example"
-DATA_DIR = Path(__file__).parent / "full_example"
 
 
 def test_build_site():
+    # delete the site.txt file, if it exists
+    (EXAMPLE_DIR / "site.txt").unlink(missing_ok=True)
     try:
-        build_site(DATA_DIR / "minimal_tap_setup.py")
+        build_site(EXAMPLE_DIR / "example_tap_setup.py")
     except FileNotFoundError as err:
         print("you need to run the test_run_gnome test first")
         raise
     # at least check that the site.txt file exists, and isn't empty.
-    assert len(open(DATA_DIR / "site.txt").read()) > 100
+    assert len(open(EXAMPLE_DIR / "site.txt").read()) > 100
 
